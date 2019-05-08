@@ -16,7 +16,7 @@ export default class SplashPage extends Component {
   render() {
     return (
       <StyledView>
-        <Title>BUTLER</Title>
+        <Title>BUTLER </Title>
         <Image
           source={require('../assets/images/butlerIcon.png')}
         />
