@@ -11,6 +11,7 @@ import {
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import SplashPage from '../components/SplashPage';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -36,6 +37,7 @@ export default class HomeScreen extends React.Component {
             {this._maybeRenderDevelopmentModeWarning()}
 
             <Text style={styles.getStartedText}>Get started by albert</Text>
+            <SplashPage />
 
             <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
               <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
