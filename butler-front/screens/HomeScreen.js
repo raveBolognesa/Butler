@@ -11,18 +11,7 @@ import {
 import { WebBrowser } from "expo";
 
 import { MonoText } from "../components/StyledText";
-import SplashPage from "../components/SplashPage";
-import Login from "../components/Login";
-import Signup from "../components/Signup";
-import PublicProfile from "../components/PublicProfile";
-import PrivateProfile from "../components/PrivateProfile";
 import Products from "../components/Products";
-import ProductCreate from "../components/ProductCreate";
-import ProductEdit from "../components/ProductsEdit";
-import ProductDetails from "../components/ProductDetails";
-import Payment from "../components/Payment";
-import Chat from "../components/Chat";
-import Chats from "../components/Chats";
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -37,24 +26,13 @@ export default class HomeScreen extends React.Component {
           contentContainerStyle={styles.contentContainer}
         >
           <View style={styles.welcomeContainer}>
-          <SplashPage />
            
           </View>
 
           <View style={styles.getStartedContainer}>
             {this._maybeRenderDevelopmentModeWarning()}
 
-            <Login />
-            <Signup />
-            <PublicProfile />
-            <PrivateProfile />
             <Products />
-            <ProductCreate />
-            <ProductEdit />
-            <ProductDetails />
-            <Payment />
-            <Chat />
-            <Chats />
 
             <View
               style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
