@@ -91,7 +91,7 @@ export default class Signup extends Component {
           <Container>
             <Image
               style={{
-                marginTop: 11,
+                marginTop: 10,
                 width: 300,
                 height: 400
               }}
