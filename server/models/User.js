@@ -9,7 +9,7 @@ const userSchema = new Schema(
     phone: String,
     card: String,
     rating: String,
-    chats: String,
+    chats: Array,
     images: String,
     coments: String
   },

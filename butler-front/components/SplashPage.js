@@ -73,7 +73,7 @@ export default class SplashPage extends Component {
   }
 
   login() {
-    axios.post("http://localhost:3010/api/auth/login",{username: this.state.username, password: this.state.password})
+    axios.post("http://192.168.43.93:3010/api/auth/login",{username: this.state.username, password: this.state.password})
     .then(response =>{ response.data;
       this.props.navigation.navigate("Main");
 
