@@ -10,8 +10,8 @@ export default class Products extends Component {
   };
 
   cogerCervezas() {
-    Axios.get("https://api.punkapi.com/v2/beers").then(res => {
-      const birra = res.data[0].name;
+    Axios.get("http://localhost:3010/api/auth/currentuser").then(res => {
+      const birra = res.data.username;
       this.setState({
         ...this.state,
         birras: birra

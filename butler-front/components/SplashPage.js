@@ -1,29 +1,16 @@
 import React, { Component } from "react";
 import {
   Text,
-  View,
   Image,
   Animated,
   Easing,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  Button
+  StyleSheet
 } from "react-native";
-import {
-  FormLabel,
-  FormInput,
-  FormValidationMessage
-} from "react-native-elements";
 import styled from "styled-components/native";
+import axios from "axios";
 
-const Title = styled.Text`
-  color: #34b5ba;
-  font-weight: bold;
-  font-size: 80px;
-  text-align: center;
-  padding: 40px;
-`;
 const Container = styled.View`
   display: flex;
   justify-content: center;
@@ -36,12 +23,6 @@ const Container2 = styled.View`
   justify-content: center;
   align-items: center;
   background-color: white;
-`;
-const ButtonLogin = styled.Button`
-  padding: 5%;
-  width: 80%;
-  height: 20%;
-  color: red;
 `;
 
 const styles = StyleSheet.create({
@@ -56,23 +37,23 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: "rgba(225,225,225,0.2)",
     borderRadius: 10,
-    borderWidth: 1 ,
-    borderColor: '#34b5ba',
+    borderWidth: 1,
+    borderColor: "#34b5ba",
     marginBottom: 10,
     padding: 10,
     color: "#000"
   },
   buttonContainer: {
     width: 300,
-    backgroundColor: '#34b5ba',
-    padding:10,
+    backgroundColor: "#34b5ba",
+    padding: 10,
     borderRadius: 10,
-    borderWidth: 1 ,
-    borderColor: '#34b5ba',
+    borderWidth: 1,
+    borderColor: "#34b5ba"
   },
   buttonText: {
     color: "white",
-    backgroundColor: '#34b5ba',
+    backgroundColor: "#34b5ba",
     textAlign: "center",
     fontWeight: "700"
   }
@@ -83,38 +64,36 @@ export default class SplashPage extends Component {
     super(props);
     this.RotateValueHolder = new Animated.Value(0);
     this.state = {
-      timePassed: false
+      timePassed: false,
+      password: "undefinasdaed",
+      username: undefined,
+      error: undefined
     };
     this.send = false;
   }
-  componentDidMount() {
-    this.StartImageRotateFunction();
+
+  login() {
+    axios.post("http://localhost:3010/api/auth/login",{username: this.state.username, password: this.state.password})
+    .then(response =>{ response.data;
+      this.props.navigation.navigate("Main");
+
+    }).catch((err)=>this.setState({error: "Mal Mal"}))
+    
   }
+
+  componentDidMount() {}
+
   componentWillMount() {
     setTimeout(() => {
       this.setState({ timePassed: true });
     }, 3000);
   }
+
   componentWillUnmount() {
     this.state.timePassed = true;
   }
-  StartImageRotateFunction() {
-    this.RotateValueHolder.setValue(0);
-    Animated.timing(this.RotateValueHolder, {
-      toValue: 1,
-      duration: 3000,
-      easing: Easing.linear
-    }).start(() => this.StartImageRotateFunction());
-  }
-  someFunction() {
-    return true;
-  }
-  render() {
-    const RotateData = this.RotateValueHolder.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"]
-    });
 
+  render() {
     if (!this.state.timePassed) {
       return (
         <Container2>
@@ -142,7 +121,7 @@ export default class SplashPage extends Component {
           <TextInput
             style={styles.input}
             autoCapitalize="none"
-            onSubmitEditing={() => this.passwordInput.focus()}
+            onChangeText={(text)=>this.setState({username: text}) }
             autoCorrect={false}
             keyboardType="email-address"
             returnKeyType="next"
@@ -152,17 +131,19 @@ export default class SplashPage extends Component {
 
           <TextInput
             style={styles.input}
+            onChangeText={(text)=>this.setState({password: text}) }
             returnKeyType="go"
-            ref={input => (this.passwordInput = input)}
             placeholder="Password"
             placeholderTextColor="rgba(225,225,225,0.7)"
             secureTextEntry
           />
-          <TouchableOpacity style={styles.buttonContainer} 
-                     onPress={() => this.props.navigation.navigate("Main")}>
-             <Text  style={styles.buttonText}>LOGIN</Text>
-</TouchableOpacity> 
-
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => this.login()}
+          >
+            <Text style={styles.buttonText}>LOGIN</Text>
+          </TouchableOpacity>
+            <Text>{this.state.error}</Text>
         </Container>
       );
     }
