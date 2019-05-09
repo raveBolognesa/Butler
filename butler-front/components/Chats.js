@@ -19,7 +19,7 @@ export default class Chats extends Component {
 
   
   cogerCervezas() {
-    Axios.get("http://localhost:3010/api/auth/currentuser").then(res => {
+    Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser").then(res => {
       const birra = res.data.username;
       const chates = res.data.chats;
       this.setState({

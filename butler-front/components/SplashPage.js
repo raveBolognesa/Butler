@@ -77,7 +77,7 @@ export default class SplashPage extends Component {
 
   login() {
     axios
-      .post("http://192.168.43.228:3010/api/auth/login", {
+      .post("https://butler-back.herokuapp.com/api/auth/login", {
         username: this.state.username,
         password: this.state.password
       })
