@@ -23,6 +23,15 @@ app.use((err, req, res, next) => {
 
 let server = http.createServer(app);
 
+const io = require("socket.io").listen(server);
+
+io.on('connection',socket=>{
+  socket.on("newUser", user=>{
+    io.broadcast.emit("addUser",user)
+  })
+  console.log("user conected")
+})
+
 server.on('error', error => {
   if (error.syscall !== 'listen') { throw error }
 
