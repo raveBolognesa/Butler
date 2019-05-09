@@ -51,6 +51,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#34b5ba"
   },
+  signupContainer: {
+    width: 300,
+    padding: 10,
+  },
   buttonText: {
     color: "white",
     backgroundColor: "#34b5ba",
@@ -65,20 +69,27 @@ export default class SplashPage extends Component {
     this.RotateValueHolder = new Animated.Value(0);
     this.state = {
       timePassed: false,
-      password: "undefinasdaed",
+      password: undefined,
       username: undefined,
       error: undefined
     };
-    this.send = false;
   }
 
   login() {
-    axios.post("http://192.168.43.93:3010/api/auth/login",{username: this.state.username, password: this.state.password})
-    .then(response =>{ response.data;
-      this.props.navigation.navigate("Main");
+    axios
+      .post("http://192.168.43.228:3010/api/auth/login", {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then(response => {
+        response.data;
+        this.props.navigation.navigate("Main");
+      })
+      .catch(err => this.setState({ error: "Authentication error" }));
+  }
 
-    }).catch((err)=>this.setState({error: "Mal Mal"}))
-    
+  signup() {
+    return this.props.navigation.navigate("Signup");
   }
 
   componentDidMount() {}
@@ -121,20 +132,20 @@ export default class SplashPage extends Component {
           <TextInput
             style={styles.input}
             autoCapitalize="none"
-            onChangeText={(text)=>this.setState({username: text}) }
+            onChangeText={text => this.setState({ username: text })}
             autoCorrect={false}
-            keyboardType="email-address"
+            keyboardType="default"
             returnKeyType="next"
-            placeholder="Email or Mobile Num"
-            placeholderTextColor="rgba(225,225,225,0.7)"
+            placeholder="Username"
+            placeholderTextColor="rgba(225,225,225,0.9)"
           />
 
           <TextInput
             style={styles.input}
-            onChangeText={(text)=>this.setState({password: text}) }
+            onChangeText={text => this.setState({ password: text })}
             returnKeyType="go"
             placeholder="Password"
-            placeholderTextColor="rgba(225,225,225,0.7)"
+            placeholderTextColor="rgba(225,225,225,0.9)"
             secureTextEntry
           />
           <TouchableOpacity
@@ -143,7 +154,13 @@ export default class SplashPage extends Component {
           >
             <Text style={styles.buttonText}>LOGIN</Text>
           </TouchableOpacity>
-            <Text>{this.state.error}</Text>
+          <Text>{this.state.error}</Text>
+          <TouchableOpacity
+            style={styles.signupContainer}
+            onPress={() => this.signup()}
+          >
+            <Text>Signup wity your email</Text>
+          </TouchableOpacity>
         </Container>
       );
     }
