@@ -19,7 +19,7 @@ export default class Chat extends Component {
     }
 
     /** 2. connect to server **/
-    this.socket = io("http://192.168.43.93:3010")
+    this.socket = io("https://butler-back.herokuapp.com")
   }
 
   mandarMensaje(){
@@ -34,7 +34,7 @@ export default class Chat extends Component {
   }
 
   componentDidMount(){
-    Axios.get("http://192.168.43.93:3010/api/auth/currentuser").then(res => {
+    Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser").then(res => {
       const birra = res.data.username;
       const usuarios = [...this.state.users]
       usuarios.push(birra)

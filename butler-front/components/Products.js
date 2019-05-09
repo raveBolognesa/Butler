@@ -10,7 +10,7 @@ export default class Products extends Component {
   };
 
   cogerCervezas() {
-    Axios.get("http://127.0.0.1:3010/api/auth/currentuser").then(res => {
+    Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser").then(res => {
       const birra = res.data.username;
       this.setState({
         ...this.state,

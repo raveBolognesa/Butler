@@ -70,7 +70,7 @@ export default class Signup extends Component {
 
   Signup() {
     axios
-      .post("http://192.168.43.228:3010/api/auth/signup", {
+      .post("https://butler-back.herokuapp.com/api/auth/signup", {
         username: this.state.username,
         password: this.state.password,
         email: this.state.email,
