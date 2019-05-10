@@ -19,7 +19,7 @@ export default class Chat extends Component {
     }
 
     /** 2. connect to server **/
-    this.socket = io("https://butler-back.herokuapp.com")
+    this.socket = io("http://localhost:3010/" + this.props.chat)
   }
 
   mandarMensaje(){
