@@ -6,4 +6,11 @@ router.get('/', (req, res, next) => {
   res.render('index');
 });
 
+router.get('/allRooms', (req, res, next) => {
+  
+  res.json({"pepe": "pepe", "juan":"juan", "edu":"edu"});
+});
+
+
+
 module.exports = router;
