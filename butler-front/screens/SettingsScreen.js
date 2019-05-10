@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import PrivateProfile from "../components/PrivateProfile";
 import Axios from "axios";
+import Photo from "../components/Photo";
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -17,6 +18,7 @@ export default class SettingsScreen extends React.Component {
     return (
       <View>
         <PrivateProfile press={this._hadleLogout}/>
+        <Photo style={{height:400}}/>
       </View>
     );
   }
