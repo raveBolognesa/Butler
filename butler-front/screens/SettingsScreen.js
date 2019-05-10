@@ -4,6 +4,7 @@ import PrivateProfile from "../components/PrivateProfile";
 import Axios from "axios";
 import Photo from "../components/Photo";
 
+
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
     title: "app.json"
