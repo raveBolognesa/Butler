@@ -115,6 +115,9 @@ export default class Signup extends Component {
       productos: []
     };
   }
+  borrar(x){
+    Axios.post(`https://butler-back.herokuapp.com/api/products/${x}/delete`,x).then(res=>  this.traerProductos()  )
+  }
 
   traerProductos() {
     Axios.get("https://butler-back.herokuapp.com/api/products/all").then(res => {
@@ -150,6 +153,7 @@ export default class Signup extends Component {
                   />
                   <Text style={styles.item}>{item.price}</Text>
                   <Text style={styles.item}>{item.title}</Text>
+                  <TouchableOpacity onPress={()=>this.borrar(item._id)}><Text>borrar{item._id}</Text></TouchableOpacity>
                 </View>
                 <Text style={styles.itemDescription}>{item.description}</Text>
               </View>
