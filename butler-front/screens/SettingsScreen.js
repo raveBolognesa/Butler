@@ -7,7 +7,7 @@ import Photo from "../components/Photo";
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
-    title: "app.json"
+    header: null
   };
 
   _hadleLogout = () =>{ this.props.navigation.navigate("Splash"); Axios.get("https://butler-back.herokuapp.com/api/auth/logout")};
@@ -19,7 +19,7 @@ export default class SettingsScreen extends React.Component {
     return (
       <View>
         <PrivateProfile press={this._hadleLogout}/>
-        <Photo style={{height:400}}/>
+        {/* <Photo style={{height:400}}/>   */}
       </View>
     );
   }

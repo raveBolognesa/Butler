@@ -64,13 +64,13 @@ const styles = StyleSheet.create({
     fontWeight: "700"
   },
   viewProducts: {
-    margin: 5,
+    marginTop: 5,
     paddingVertical: 10,
     padding: 10,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#34b5ba",
-    backgroundColor: "#34b5ba"
+    backgroundColor: "whitesmoke"
   },
   viewItem: {
     textAlign: "center",
@@ -85,26 +85,39 @@ const styles = StyleSheet.create({
   titleItem: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: 2,
-    paddingVertical: 10,
-    padding: 10,
-    borderRadius: 20,
     borderWidth: 1,
+    borderRadius: 20,
     borderColor: "#34b5ba",
-    backgroundColor: "whitesmoke",
-    fontSize: 40,
-    fontWeight: "bold"
+    padding: 10,
+    marginBottom: 5
   },
   itemDescription: {
-    textAlignVertical: "center",
-    textAlign: "center",
-    color: "#34b5ba"
+    width: 250
   },
-  item: {
+  imagenItem: {
     width: 75,
-    height: 75
+    height: 75,
+    borderWidth: 1,
+    borderRadius: 50,
+    borderColor: "#34b5ba",
+    marginRight: 20
+  },
+  itemTitle: {
+    color: "#34b5ba",
+    fontWeight: "bold",
+    fontSize: 20
+  },
+  itemHeader: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 200
+  },
+  itemPrice: {
+    marginLeft: 20,
+    color: "#969696",
+    fontSize: 15,
+    fontWeight: "bold"
   }
 });
 
@@ -115,18 +128,23 @@ export default class Signup extends Component {
       productos: []
     };
   }
-  borrar(x){
-    Axios.post(`https://butler-back.herokuapp.com/api/products/${x}/delete`,x).then(res=>  this.traerProductos()  )
+  borrar(x) {
+    Axios.post(
+      `https://butler-back.herokuapp.com/api/products/${x}/delete`,
+      x
+    ).then(res => this.traerProductos());
   }
 
   traerProductos() {
-    Axios.get("https://butler-back.herokuapp.com/api/products/all").then(res => {
-      const producto = res.data;
-      this.setState({
-        ...this.state,
-        productos: producto
-      });
-    });
+    Axios.get("https://butler-back.herokuapp.com/api/products/all").then(
+      res => {
+        const producto = res.data;
+        this.setState({
+          ...this.state,
+          productos: producto
+        });
+      }
+    );
   }
   componentDidMount() {
     this.traerProductos();
@@ -135,8 +153,8 @@ export default class Signup extends Component {
   render() {
     const datos = this.state.productos;
     return (
-      <ScrollView>
-        <View style={styles.viewProducts}>
+      <View style={styles.viewProducts}>
+        <ScrollView>
           <SectionList
             sections={[
               {
@@ -144,24 +162,40 @@ export default class Signup extends Component {
               }
             ]}
             renderItem={({ item }) => (
-              <View style={styles.viewItem}>
-              <Text>Hola</Text>
-                <View style={styles.titleItem}>
-                  <Image
-                    style={styles.item}
-                    source={require("../assets/images/icon.png")}
-                  />
-                  <Text style={styles.item}>{item.price}</Text>
-                  <Text style={styles.item}>{item.title}</Text>
-                  <TouchableOpacity onPress={()=>this.borrar(item._id)}><Text>borrar{item._id}</Text></TouchableOpacity>
-                </View>
-                <Text style={styles.itemDescription}>{item.description}</Text>
+                <TouchableOpacity onPress={()=>this.props.openProduct(item._id)} >
+              <View style={styles.titleItem}>
+                  <View style={styles.item}>
+                    <Image
+                      source={require("../assets/images/icon.png")}
+                      style={styles.imagenItem}
+                    />
+                  </View>
+                  <View style={styles.item}>
+                    <View style={styles.itemHeader}>
+                      <Text style={styles.itemTitle}>
+                        {item.title.length > 20
+                          ? item.title.substring(0, 20 - 3) + "..."
+                          : item.title}
+                      </Text>
+
+                      <Text style={styles.itemPrice}>{item.price}</Text>
+                    </View>
+                    <Text style={styles.itemDescription} numberOfLines={3}>
+                      {item.description.length > 100
+                        ? item.description.substring(0, 100 - 3) + "..."
+                        : item.description}
+                    </Text>
+                    {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
+                    <Text>borrar</Text>
+                  </TouchableOpacity> */}
+                  </View>
               </View>
+                </TouchableOpacity>
             )}
             keyExtractor={(item, index) => index}
           />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 }

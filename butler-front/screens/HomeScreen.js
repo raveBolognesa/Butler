@@ -12,192 +12,309 @@ import { WebBrowser } from "expo";
 
 import { MonoText } from "../components/StyledText";
 import Products from "../components/Products";
+import Axios from "axios";
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: undefined,
+      product: undefined,
+      author: "",
+      phone: "",
+      description: "",
+      price: undefined,
+      localization: undefined,
+      date: undefined,
+      createAt: undefined,
+      picture: undefined
+    };
+  }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <View style={styles.welcomeContainer}>
-
-           
-          </View>
-
-          <View style={styles.getStartedContainer}>
-            {this._maybeRenderDevelopmentModeWarning()}
-
-            <Products />
-
-            <View
-              style={[styles.codeHighlightContainer, styles.homeScreenFilename]}
-            >
-              <MonoText style={styles.codeHighlightText}>
-                screens/HomeScreen.js
-              </MonoText>
-            </View>
-
-            <Text style={styles.getStartedText}>
-              Change this text and your app will automatically reload.
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity
-              onPress={this._handleHelpPress}
-              style={styles.helpLink}
-            >
-              <Text style={styles.helpLinkText}>
-                Help, it didn’t automatically reload!
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-
-        <View style={styles.tabBarInfoContainer}>
-          <Text style={styles.tabBarInfoText}>
-            This is a Algori BAR. You can edit it in:
-          </Text>
-
-          <View
-            style={[styles.codeHighlightContainer, styles.navigationFilename]}
-          >
-            <MonoText style={styles.codeHighlightText}>
-              navigation/MainTabNavigator.js
-            </MonoText>
-          </View>
-        </View>
-      </View>
+  openProduct(x) {
+    this.setState({ ...this.state, product: x });
+    Axios.get(
+      `https://butler-back.herokuapp.com/api/products/${x}/oneproduct`
+    ).then(res =>
+      this.setState({
+        ...this.state,
+        title: res.data.product.title,
+        author: res.data.product.author.username,
+        phone: res.data.product.author.phone,
+        email: res.data.product.author.email,
+        description: res.data.product.description,
+        price: res.data.product.price,
+        localization: res.data.product.localization,
+        date: res.data.product.date,
+        createAt: res.data.product.created_at
+      })
     );
   }
 
-  _maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
+  render() {
+    if (this.state.product === undefined) {
       return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use
-          useful development tools. {learnMoreButton}
-        </Text>
+        <View style={styles.container}>
+          <View style={styles.containerProducts}>
+            <Text style={styles.productsTitle}>
+              Productos {this.state.product}
+            </Text>
+            <Products openProduct={x => this.openProduct(x)} />
+          </View>
+        </View>
       );
     } else {
       return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
+        <View style={styles.container}>
+          <ScrollView>
+            <View style={styles.containerProduct}>
+              <View style={styles.productHeader}>
+                <View>
+                  <Image
+                    style={styles.imagenItem1}
+                    source={require("../assets/images/icon.png")}
+                  />
+                </View>
+                <View style={styles.tituloDerecha}>
+                  <View style={styles.barradetitulo}>
+                    <Text style={styles.tituloBlanco}>{this.state.title}</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.subtituloBlanco}>
+                      {this.state.price}
+                    </Text>
+                    <Text style={styles.subtituloBlanco}>
+                      {this.state.date}
+                    </Text>
+                  </View>
+                  <View>
+                    <TouchableOpacity style={styles.botonCabron}>
+                      <Text style={styles.buttonX}>BUY</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.fondoblanco}>
+                <Text>{this.state.createAt}</Text>
+                <Text numberOfLines={3}>
+                  {this.state.description.length > 170
+                    ? this.state.description.substring(0, 170 - 3) + "..."
+                    : this.state.description}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.productoMapa}>
+              <Text>MAPA</Text>
+            </View>
+            <View style={styles.productoAuthor}>
+              <TouchableOpacity onPress={() => this.props.openProduct(x)}>
+                <View style={styles.titleItem}>
+                  <View style={styles.item}>
+                    <Image
+                      source={require("../assets/images/icon.png")}
+                      style={styles.imagenItem}
+                    />
+                  </View>
+                  <View style={styles.item}>
+                    <View style={styles.itemHeader}>
+                      <Text style={styles.itemTitle}>
+                        {this.state.author.length > 20
+                          ? this.state.author.substring(0, 20 - 3) + "..."
+                          : this.state.author}
+                      </Text>
+                    </View>
+                    <Text style={styles.itemDescription}>
+                      {this.state.phone}
+                    </Text>
+                    <Text style={styles.itemDescription}>
+                      {this.state.email}
+                    </Text>
+                    {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
+                    <Text>borrar</Text>
+                  </TouchableOpacity> */}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity style={styles.buttonContainer}>
+                <Text style={styles.buttonText}>CHAT</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity
+                style={styles.buttonContainer2}
+                onPress={() =>
+                  this.setState({ ...this.state, product: undefined })
+                }
+              >
+                <Text style={styles.buttonText2}>BACK</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
       );
     }
   }
-
-  _handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync(
-      "https://docs.expo.io/versions/latest/guides/development-mode"
-    );
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      "https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes"
-    );
-  };
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    padding: 10,
+    marginTop: 20
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: "rgba(0,0,0,0.4)",
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: "center"
+  containerProducts: {
+    backgroundColor: "#34b5ba",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#34b5ba"
   },
-  contentContainer: {
-    paddingTop: 30
-  },
-  welcomeContainer: {
-    alignItems: "center",
+  productsTitle: {
+    color: "whitesmoke",
+    fontSize: 20,
+    marginLeft: 10,
     marginTop: 10,
-    marginBottom: 20
+    fontWeight: "bold"
   },
-  welcomeImage: {
-    width: 250,
-    height: 300,
-    resizeMode: "contain",
-    marginTop: 3,
-    marginLeft: -10
+
+  containerProduct: {
+    backgroundColor: "#34b5ba",
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: "#34b5ba",
+    height: 350,
+    color: "whitesmoke",
+    fontSize: 20,
+    fontWeight: "800"
   },
-  getStartedContainer: {
-    alignItems: "center",
-    marginHorizontal: 50
+  imagenItem1: {
+    width: 120,
+    height: 120,
+    borderWidth: 1,
+    borderRadius: 75,
+    borderColor: "whitesmoke",
+    backgroundColor: "whitesmoke",
+    marginRight: 20
   },
-  homeScreenFilename: {
-    marginVertical: 7
+  productHeader: {
+    flex: 1,
+    flexDirection: "row",
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: "#34b5ba",
+    padding: 10,
+    marginBottom: 5
   },
-  codeHighlightText: {
-    color: "rgba(96,100,109, 0.8)"
+  fondoblanco: {
+    backgroundColor: "whitesmoke",
+    padding: 5,
+    borderColor: "#34b5ba",
+    borderRadius: 20,
+    borderWidth: 1,
+    height: 200
   },
-  codeHighlightContainer: {
-    backgroundColor: "rgba(0,0,0,0.05)",
-    borderRadius: 3,
-    paddingHorizontal: 4
+  tituloBlanco: {
+    color: "whitesmoke",
+    fontSize: 20,
+    fontWeight: "bold"
   },
-  getStartedText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    lineHeight: 24,
-    textAlign: "center"
+  subtituloBlanco: {
+    color: "whitesmoke",
+    fontSize: 15,
+    fontWeight: "bold"
   },
-  tabBarInfoContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: "black",
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3
-      },
-      android: {
-        elevation: 20
-      }
-    }),
-    alignItems: "center",
-    backgroundColor: "#fbfbfb",
-    paddingVertical: 20
+  tituloDerecha: {
+    flex: 1,
+    flexDirection: "column"
   },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: "rgba(96,100,109, 1)",
-    textAlign: "center"
+  productoMapa: {
+    marginTop: 20,
+    backgroundColor: "#34b5ba",
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: "#34b5ba",
+    height: 350
   },
-  navigationFilename: {
+  titleItem: {
+    flex: 1,
+    flexDirection: "row",
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: "#34b5ba",
+    padding: 10,
+    marginBottom: 5
+  },
+  itemDescription: {
+    width: 250
+  },
+  imagenItem: {
+    width: 75,
+    height: 75,
+    borderWidth: 1,
+    borderRadius: 50,
+    borderColor: "#34b5ba",
+    marginRight: 20
+  },
+  itemTitle: {
+    color: "#34b5ba",
+    fontWeight: "bold",
+    fontSize: 20
+  },
+  itemHeader: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 200
+  },
+  barradetitulo: {
+    height: 40
+  },
+  botonCabron: {
     marginTop: 5
   },
-  helpContainer: {
+  buttonX: {
+    backgroundColor: "whitesmoke",
+    padding: 5,
+    borderWidth: 1,
+    borderRadius: 50,
+    borderColor: "#34b5ba",
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold"
+  },
+  productoAuthor: {
+    marginTop: 20
+  },
+  buttonContainer: {
     marginTop: 15,
-    alignItems: "center"
+    backgroundColor: "#34b5ba",
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#34b5ba"
   },
-  helpLink: {
-    paddingVertical: 15
+  buttonText: {
+    color: "white",
+    backgroundColor: "#34b5ba",
+    textAlign: "center",
+    fontWeight: "700"
   },
-  helpLinkText: {
-    fontSize: 14,
-    color: "#2e78b7"
+  buttonContainer2: {
+    marginTop: 15,
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#34b5ba",
+    marginBottom: 20
+  },
+  buttonText2: {
+    color: "black",
+    textAlign: "center",
+    fontWeight: "700"
   }
 });

@@ -14,9 +14,9 @@ export default class LinksScreen extends React.Component {
       message: "m",
       time:1
     }}
-  static navigationOptions = {
-    title: 'Links',
-  };
+    static navigationOptions = {
+      header: null
+    };
   mandarMensaje(){
     this.setState({...this.state,chat: this.state.message})
   }
