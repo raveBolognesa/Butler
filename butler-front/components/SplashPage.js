@@ -120,6 +120,8 @@ export default class SplashPage extends Component {
     } else {
       return (
         <Container>
+          <TouchableOpacity 
+            onPress={() => this.props.navigation.navigate("Main") }  >
           <Image
             style={{
               marginTop: 80,
@@ -128,6 +130,8 @@ export default class SplashPage extends Component {
             }}
             source={require("../assets/images/icon.png")}
           />
+
+          </TouchableOpacity>
 
           <TextInput
             style={styles.input}
