@@ -166,7 +166,7 @@ export default class Signup extends Component {
               <View style={styles.titleItem}>
                   <View style={styles.item}>
                     <Image
-                      source={require("../assets/images/icon.png")}
+                      source={{uri:"https://picsum.photos/200"}}
                       style={styles.imagenItem}
                     />
                   </View>

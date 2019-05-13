@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { WebBrowser } from "expo";
+import { WebBrowser,  Constants, MapView, Location, Permissions } from "expo";
 
 import { MonoText } from "../components/StyledText";
 import Products from "../components/Products";
@@ -30,9 +30,27 @@ export default class HomeScreen extends React.Component {
       localization: undefined,
       date: undefined,
       createAt: undefined,
-      picture: undefined
+      picture: undefined,
+
+    mapRegion: { latitude: 40.39, longitude: -3.69, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
+    locationResult: null,
+    location: {coords: { latitude: 40.39, longitude: -3.69}},
     };
   }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        locationResult: 'Permission to access location was denied',
+        location,
+      });
+    }
+ 
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ locationResult: JSON.stringify(location), location, });
+  };
+ 
 
   openProduct(x) {
     this.setState({ ...this.state, product: x });
@@ -54,7 +72,13 @@ export default class HomeScreen extends React.Component {
     );
   }
 
+  componentDidMount() {
+    this._getLocationAsync();
+  }
+
   render() {
+    const { navigate } = this.props.navigation;
+
     if (this.state.product === undefined) {
       return (
         <View style={styles.container}>
@@ -68,8 +92,8 @@ export default class HomeScreen extends React.Component {
       );
     } else {
       return (
-        <View style={styles.container}>
           <ScrollView>
+        <View style={styles.containerOneProduct}>
             <View style={styles.containerProduct}>
               <View style={styles.productHeader}>
                 <View>
@@ -106,8 +130,12 @@ export default class HomeScreen extends React.Component {
                 </Text>
               </View>
             </View>
-            <View style={styles.productoMapa}>
-              <Text>MAPA</Text>
+            <View style={styles.mapaBorde}>
+              <MapView
+                style={styles.productoMapa}
+                initialRegion={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
+                
+              />
             </View>
             <View style={styles.productoAuthor}>
               <TouchableOpacity onPress={() => this.props.openProduct(x)}>
@@ -140,7 +168,10 @@ export default class HomeScreen extends React.Component {
               </TouchableOpacity>
             </View>
             <View>
-              <TouchableOpacity style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={() => navigate("Links", { id: this.state.author })}
+              >
                 <Text style={styles.buttonText}>CHAT</Text>
               </TouchableOpacity>
             </View>
@@ -154,8 +185,8 @@ export default class HomeScreen extends React.Component {
                 <Text style={styles.buttonText2}>BACK</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
         </View>
+          </ScrollView>
       );
     }
   }
@@ -166,7 +197,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 10,
-    marginTop: 20
+    marginTop: 20,
+    marginBottom: 80
+  },
+  containerOneProduct: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 10,
+    marginTop: 20,
   },
   containerProducts: {
     backgroundColor: "#34b5ba",
@@ -233,8 +271,14 @@ const styles = StyleSheet.create({
     flexDirection: "column"
   },
   productoMapa: {
-    marginTop: 20,
     backgroundColor: "#34b5ba",
+    borderWidth: 1,
+    borderRadius: 20,
+    borderColor: "#34b5ba",
+    height: 350
+  },
+  mapaBorde: {
+    marginTop: 20,
     borderWidth: 1,
     borderRadius: 20,
     borderColor: "#34b5ba",
@@ -310,7 +354,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#34b5ba",
-    marginBottom: 20
+    marginBottom: 10
   },
   buttonText2: {
     color: "black",
