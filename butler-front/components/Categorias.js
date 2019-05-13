@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import Axios from 'axios';
 import {
   SectionList,
@@ -179,6 +180,7 @@ export default class Categorias extends Component {
       }
     ).catch(error=> console.log(error));
     
+
   }
   componentDidMount() {
     this.traerProductos();

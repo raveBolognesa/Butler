@@ -51,7 +51,6 @@ export default class HomeScreen extends React.Component {
     this.setState({ locationResult: JSON.stringify(location), location, });
   };
  
-
   openProduct(x) {
     this.setState({ ...this.state, product: x });
     Axios.get(
@@ -136,7 +135,6 @@ export default class HomeScreen extends React.Component {
                 initialRegion={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
                 
               />
-            </View>
             <View style={styles.productoAuthor}>
               <TouchableOpacity onPress={() => this.props.openProduct(x)}>
                 <View style={styles.titleItem}>
