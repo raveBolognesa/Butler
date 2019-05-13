@@ -184,6 +184,7 @@ export default class HomeScreen extends React.Component {
               </TouchableOpacity>
             </View>
         </View>
+        </View>
           </ScrollView>
       );
     }
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderWidth: 1,
-    borderRadius: 75,
+    borderRadius: 60,
     borderColor: "whitesmoke",
     backgroundColor: "whitesmoke",
     marginRight: 20
@@ -317,14 +318,14 @@ const styles = StyleSheet.create({
     height: 40
   },
   botonCabron: {
-    marginTop: 5
-  },
-  buttonX: {
+    marginTop: 5,
     backgroundColor: "whitesmoke",
     padding: 5,
     borderWidth: 1,
-    borderRadius: 50,
+    borderRadius: 10,
     borderColor: "#34b5ba",
+  },
+  buttonX: {
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold"

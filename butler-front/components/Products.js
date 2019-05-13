@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
     width: 250
   },
   imagenItem: {
-    width: 75,
-    height: 75,
+    width: 76,
+    height: 76,
     borderWidth: 1,
-    borderRadius: 50,
+    borderRadius: 38,
     borderColor: "#34b5ba",
     marginRight: 20
   },
