@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "#34b5ba",
     textAlign: "center",
-    fontWeight: "700"
+    fontWeight: "800"
   }
 });
 
@@ -85,9 +85,8 @@ export default class Signup extends Component {
 
   render() {
     return (
-      <View>
-        <ScrollView  style={styles.container}
-          contentContainerStyle={styles.contentContainer}>
+      <ScrollView>
+        <View style={styles.container}>
           <Container>
             <Image
               style={{
@@ -146,8 +145,8 @@ export default class Signup extends Component {
             </TouchableOpacity>
             <Text>{this.state.error}</Text>
           </Container>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     );
   }
 }

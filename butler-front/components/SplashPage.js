@@ -3,6 +3,7 @@ import {
   Text,
   Image,
   Animated,
+  ScrollView,
   Easing,
   TextInput,
   TouchableOpacity,
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   },
   signupContainer: {
     width: 300,
-    padding: 10,
+    padding: 10
   },
   buttonText: {
     color: "white",
@@ -119,53 +120,55 @@ export default class SplashPage extends Component {
       );
     } else {
       return (
-        <Container>
-          <TouchableOpacity 
-            onPress={() => this.props.navigation.navigate("Main") }  >
-          <Image
-            style={{
-              marginTop: 80,
-              width: 300,
-              height: 400
-            }}
-            source={require("../assets/images/icon.png")}
-          />
+        <ScrollView>
+          <Container>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Main")}
+            >
+              <Image
+                style={{
+                  marginTop: 80,
+                  width: 300,
+                  height: 400
+                }}
+                source={require("../assets/images/icon.png")}
+              />
+            </TouchableOpacity>
 
-          </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              autoCapitalize="none"
+              onChangeText={text => this.setState({ username: text })}
+              autoCorrect={false}
+              keyboardType="default"
+              returnKeyType="next"
+              placeholder="Username"
+              placeholderTextColor="rgba(225,225,225,0.9)"
+            />
 
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            onChangeText={text => this.setState({ username: text })}
-            autoCorrect={false}
-            keyboardType="default"
-            returnKeyType="next"
-            placeholder="Username"
-            placeholderTextColor="rgba(225,225,225,0.9)"
-          />
-
-          <TextInput
-            style={styles.input}
-            onChangeText={text => this.setState({ password: text })}
-            returnKeyType="go"
-            placeholder="Password"
-            placeholderTextColor="rgba(225,225,225,0.9)"
-            secureTextEntry
-          />
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => this.login()}
-          >
-            <Text style={styles.buttonText}>LOGIN</Text>
-          </TouchableOpacity>
-          <Text>{this.state.error}</Text>
-          <TouchableOpacity
-            style={styles.signupContainer}
-            onPress={() => this.signup()}
-          >
-            <Text>Signup wity your email</Text>
-          </TouchableOpacity>
-        </Container>
+            <TextInput
+              style={styles.input}
+              onChangeText={text => this.setState({ password: text })}
+              returnKeyType="go"
+              placeholder="Password"
+              placeholderTextColor="rgba(225,225,225,0.9)"
+              secureTextEntry
+            />
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => this.login()}
+            >
+              <Text style={styles.buttonText}>LOGIN</Text>
+            </TouchableOpacity>
+            <Text>{this.state.error}</Text>
+            <TouchableOpacity
+              style={styles.signupContainer}
+              onPress={() => this.signup()}
+            >
+              <Text>Signup wity your email</Text>
+            </TouchableOpacity>
+          </Container>
+        </ScrollView>
       );
     }
   }

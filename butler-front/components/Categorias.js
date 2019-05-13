@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+
+import Axios from 'axios';
 import {
   SectionList,
   Image,
@@ -160,6 +162,13 @@ export default class Categorias extends Component {
     };
   }
 
+  borrar(x) {
+    Axios.post(
+      `https://butler-back.herokuapp.com/api/products/${x}/delete`,
+      x
+    ).then(res => this.traerProductos());
+  }
+
   traerProductos() {
     Axios.get("https://butler-back.herokuapp.com/api/products/all").then(
       res => {
@@ -169,7 +178,9 @@ export default class Categorias extends Component {
           productos: producto
         });
       }
-    );
+    ).catch(error=> console.log(error));
+    
+
   }
   componentDidMount() {
     this.traerProductos();
@@ -178,158 +189,156 @@ export default class Categorias extends Component {
   render() {
     const datos = this.state.productos;
 
-    if (this.state.campo === "products") {
-      return (
-        <View style={jamon.categorias}>
-          <View style={jamon.cambio}>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() =>
-                this.setState({ ...this.state, campo: "products" })
-              }
-            >
-              <Text>Products</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() => this.setState({ ...this.state, campo: "buys" })}
-            >
-              <Text>buys</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() => this.setState({ ...this.state, campo: "rating" })}
-            >
-              <Text>rating</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={jamon.fondoblanco}>
-            <ScrollView>
-              <SectionList
-                sections={[
-                  {
-                    data: datos
-                  }
-                ]}
-                renderItem={({ item }) => (
+    if(datos){
+        if (this.state.campo === "products") {
+            return (
+              <View style={jamon.categorias}>
+                <View style={jamon.cambio}>
                   <TouchableOpacity
-                    onPress={() => this.props.openProduct(item._id)}
+                    style={jamon.items}
+                    onPress={() =>
+                      this.setState({ ...this.state, campo: "products" })
+                    }
                   >
-                    <View style={styles.titleItem}>
-                      <View style={styles.item}>
-                        <Image
-                          source={require("../assets/images/icon.png")}
-                          style={styles.imagenItem}
-                        />
-                      </View>
-                      <View style={styles.item}>
-                        <View style={styles.itemHeader}>
-                          <Text style={styles.itemTitle}>
-                            {item.title.length > 20
-                              ? item.title.substring(0, 20 - 3) + "..."
-                              : item.title}
-                          </Text>
-
-                          <Text style={styles.itemPrice}>{item.price}</Text>
-                        </View>
-                        <Text style={styles.itemDescription} numberOfLines={3}>
-                          {item.description.length > 100
-                            ? item.description.substring(0, 100 - 3) + "..."
-                            : item.description}
-                        </Text>
-                        {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
-                    <Text>borrar</Text>
-                  </TouchableOpacity> */}
-                      </View>
-                    </View>
+                    <Text>Products</Text>
                   </TouchableOpacity>
-                )}
-                keyExtractor={(item, index) => index}
-              />
-            </ScrollView>
-          </View>
-        </View>
-      );
-    } else if (this.state.campo === "buys") {
-      return (
-        <View style={jamon.categorias}>
-          <View style={jamon.cambio}>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() =>
-                this.setState({ ...this.state, campo: "products" })
-              }
-            >
-              <Text>Products</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() => this.setState({ ...this.state, campo: "buys" })}
-            >
-              <Text>buys</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() => this.setState({ ...this.state, campo: "rating" })}
-            >
-              <Text>rating</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={jamon.fondoblanco}>
-            <ScrollView>
-              <Text>buys</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-            </ScrollView>
-          </View>
-        </View>
-      );
-    } else {
-      return (
-        <View style={jamon.categorias}>
-          <View style={jamon.cambio}>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() =>
-                this.setState({ ...this.state, campo: "products" })
-              }
-            >
-              <Text>Products</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() => this.setState({ ...this.state, campo: "buys" })}
-            >
-              <Text>buys</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={jamon.items}
-              onPress={() => this.setState({ ...this.state, campo: "rating" })}
-            >
-              <Text>rating</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={jamon.fondoblanco}>
-            <ScrollView>
-              <Text>rating</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-              <Text>Productos</Text>
-            </ScrollView>
-          </View>
-        </View>
-      );
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() => this.setState({ ...this.state, campo: "buys" })}
+                  >
+                    <Text>buys</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() => this.setState({ ...this.state, campo: "rating" })}
+                  >
+                    <Text>rating</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={jamon.fondoblanco}>
+                  <ScrollView>
+                    <SectionList
+                      sections={[
+                        {
+                          data: datos
+                        }
+                      ]}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          onPress={() => this.props.openProduct(item._id)}
+                        >
+                          <View style={styles.titleItem}>
+                            <View style={styles.item}>
+                              <Image
+                                source={require("../assets/images/icon.png")}
+                                style={styles.imagenItem}
+                              />
+                            </View>
+                            <View style={styles.item}>
+                              <View style={styles.itemHeader}>
+                                <Text style={styles.itemTitle}>
+                                  {item.title}
+                                </Text>
+      
+                                <Text style={styles.itemPrice}>{item.price}</Text>
+                              </View>
+                              <Text style={styles.itemDescription} numberOfLines={3}>
+                                {item.description}
+                              </Text>
+                              <TouchableOpacity onPress={() => this.borrar(item._id)}>
+                          <Text>borrar</Text>
+                        </TouchableOpacity>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      )}
+                      keyExtractor={(item, index) => index}
+                    />
+                  </ScrollView>
+                </View>
+              </View>
+            );
+          } else if (this.state.campo === "buys") {
+            return (
+              <View style={jamon.categorias}>
+                <View style={jamon.cambio}>
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() =>
+                      this.setState({ ...this.state, campo: "products" })
+                    }
+                  >
+                    <Text>Products</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() => this.setState({ ...this.state, campo: "buys" })}
+                  >
+                    <Text>buys</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() => this.setState({ ...this.state, campo: "rating" })}
+                  >
+                    <Text>rating</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={jamon.fondoblanco}>
+                  <ScrollView>
+                    <Text>buys</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                  </ScrollView>
+                </View>
+              </View>
+            );
+          } else {
+            return (
+              <View style={jamon.categorias}>
+                <View style={jamon.cambio}>
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() =>
+                      this.setState({ ...this.state, campo: "products" })
+                    }
+                  >
+                    <Text>Products</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() => this.setState({ ...this.state, campo: "buys" })}
+                  >
+                    <Text>buys</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={jamon.items}
+                    onPress={() => this.setState({ ...this.state, campo: "rating" })}
+                  >
+                    <Text>rating</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={jamon.fondoblanco}>
+                  <ScrollView>
+                    <Text>rating</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                    <Text>Productos</Text>
+                  </ScrollView>
+                </View>
+              </View>
+            );
+          }
+        }
     }
-  }
 }
