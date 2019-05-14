@@ -81,5 +81,8 @@ app.use('/api/chats', chats);
 const paymentsRoutes = require('./routes/payments');
 app.use('/', paymentsRoutes);
 
+const sockRoutes = require('./routes/sock');
+app.use('/sock', sockRoutes);
+
 
 module.exports = app;

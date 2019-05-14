@@ -12,6 +12,7 @@ import {
 import Chats from "../components/Chats";
 import Chat from "../components/Chat";
 import Axios from "axios";
+import io from 'socket.io-client';
 
 import styled from "styled-components/native";
 
@@ -27,6 +28,9 @@ export default class LinksScreen extends React.Component {
       products: [],
       mensaje: ""
     };
+
+    /** 2. connect to server **/
+    this.socket = io("https://butler-back.herokuapp.com/" + this.state.id)
   }
   static navigationOptions = {
     header: null
@@ -36,7 +40,7 @@ export default class LinksScreen extends React.Component {
   // }
 
   traerProductos(x) {
-    Axios.get("https://butler-back.herokuapp.com/api/products/all").then(
+    Axios.get("https://butler-back.herokuapp.com/sock/allchats").then(
       res => {
         const producto = res.data;
         this.setState({
@@ -48,14 +52,43 @@ export default class LinksScreen extends React.Component {
     );
   }
 
+  cargarUnChat(x){
+    Axios.get(`https://butler-back.herokuapp.com/sock/${x}/oneChat`).then(
+      res => {
+        const producto = res.data;
+        this.setState({
+          ...this.state,
+          jamon: producto,
+          id: x
+        });
+      }
+    );
+
+  }
+  mandarUnMensaje(x){
+    Axios.post(`https://butler-back.herokuapp.com/sock/chat/${x}/addmesage`,{newmesage:this.state.mensaje}).then(res=>{
+      const producto = res.data;
+      this.socket.emit("messageSent", "mensaje");
+
+        this.setState({
+          ...this.state,
+          jamon: producto,
+          id: x});
+    });
+  }
+
   componentDidMount() {
     const { navigation } = this.props;
     const itemId = navigation.getParam("id");
 
     this.traerProductos(itemId);
 
+    this.socket.on("newMessage", message =>{
+      this.cargarUnChat(this.state.id)
+    });
+
     // setInterval(()=>{
-    //   Axios.get("http://localhost:3010/allRooms").then(res =>this.setState({...this.state,chat: Object.keys(res.data),time: this.state.time +=1}));
+    //   Axios.get("https://butler-back.herokuapp.com/allRooms").then(res =>this.setState({...this.state,chat: Object.keys(res.data),time: this.state.time +=1}));
     // },1000)
   }
 
@@ -67,71 +100,118 @@ export default class LinksScreen extends React.Component {
   }
 
   render() {
+    
     const datos = this.state.products;
     if (this.state.id) {
       return (
-        <View style={styles.container3}>
-          <View style={styles.containerProducts3}>
-            <View style={styles.mensajes2}>
+        <View style={styles.superpadre}>
+          <View
+            style={{
+              backgroundColor: "#34b5ba",
+              flex: 1,
+              flexDirection: "column",
+              justifyContent: "space-between",
+              borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: "#34b5ba",
+
+            }}
+          >
               <View>
-                <Text style={styles.titleMensajes}>{this.state.id}</Text>
+              <View style={styles.mensajes}>
+                  <View  style={{ width: 300, height: 20 ,paddingLeft:5}}>
+                    <Text style={{color:"white",fontWeight:"bold"}}>{this.state.id}</Text>
+                  </View>
+                  <View  style={{ width: 40, height: 20,paddingRight:5 }}>
+                    <TouchableOpacity
+                      style={{ width: 40, height: 20 }}
+                      onPress={() =>
+                        this.setState({ ...this.state, id: "" })
+                      }
+                    >
+                      <Text>Exit</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-              <View>
-                <TouchableOpacity
-                  style={{ width: 40, height: 20 }}
-                  onPress={() =>
-                    this.setState({ ...this.state, id: undefined })
-                  }
+            <View style={styles.padre}>
+                      <View style={{ backgroundColor: "white",padding:5 ,borderRadius: 20,
+                    borderWidth: 1,
+                    height:550,
+                    borderColor: "#34b5ba",}}>
+
+              <ScrollView style={{ flex:1}}>
+              <SectionList
+                  sections={[
+                    {
+                      data: this.state.jamon.message
+                    }
+                  ]}
+                  renderItem={({ item }) => (
+
+
+                    <Text>{item}</Text>
+
+
+                    )}
+                  keyExtractor={(item, index) => index}
+                />
+
+                <Text style={styles.mensajesIzquierda}>mis mensajes</Text>
+                <Text style={styles.mensajesDerecha}>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+                <Text>mis mensajes</Text>
+              </ScrollView>
+                      </View>
+            </View>
+            <View style={{marginBottom:40}}>
+              <View style={{
+                flex: 1,
+                justifyContent: "space-between",
+                flexDirection: "row",
+                marginTop: 20,
+
+              }}>
+                <TextInput
+                  multiline
+                  style={{
+                    height: 40,
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: "#34b5ba",
+                    marginBottom: 10,
+                    padding: 10,
+                    color: "black",
+                    maxWidth: 270
+                  }}
+                  autoCapitalize="none"
+                  onChangeText={text => {
+                    this.changeHeight(text);
+                  }}
+                  autoCorrect={false}
+                  keyboardType="default"
+                  returnKeyType="next"
+                  placeholder="Mensaje                                                ."
+                  placeholderTextColor="rgba(225,225,225,0.9)"
+                  maxLength={100}
+                />
+
+                <TouchableOpacity style={styles.buttonContainer}
+                onPress={()=>this.mandarUnMensaje(this.state.id)}
                 >
-                  <Text>Exit</Text>
+                  <Text style={styles.buttonText}>Send</Text>
                 </TouchableOpacity>
               </View>
             </View>
-
-            <ScrollView style={styles.ScrollView3}>
-              <Text style={styles.mensajesIzquierda}>mis mensajes</Text>
-              <Text style={styles.mensajesDerecha}>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-              <Text>mis mensajes</Text>
-            </ScrollView>
-          </View>
-          <View style={styles.mensajes}>
-            <TextInput
-              multiline
-              style={{
-                height: this.state.height,
-                backgroundColor: "rgba(225,225,225,0.2)",
-                borderRadius: 20,
-                borderWidth: 1,
-                borderColor: "#34b5ba",
-                marginBottom: 10,
-                padding: 10,
-                color: "#000",
-                maxWidth: 300
-              }}
-              autoCapitalize="none"
-              onChangeText={text => {
-                this.changeHeight(text);
-              }}
-              autoCorrect={false}
-              keyboardType="default"
-              returnKeyType="next"
-              placeholder="Mensaje                                                ."
-              placeholderTextColor="rgba(225,225,225,0.9)"
-              maxLength={100}
-            />
-
-            <TouchableOpacity style={styles.buttonContainer}>
-              <Text style={styles.buttonText}>Send</Text>
-            </TouchableOpacity>
           </View>
         </View>
       );
@@ -151,7 +231,7 @@ export default class LinksScreen extends React.Component {
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() =>
-                        this.setState({ ...this.state, id: item._id })
+                        this.cargarUnChat(item._id)
                       }
                     >
                       <View style={styles.titleItem}>
@@ -175,9 +255,7 @@ export default class LinksScreen extends React.Component {
                             style={styles.itemDescription}
                             numberOfLines={3}
                           >
-                            {item.description.length > 100
-                              ? item.description.substring(0, 100 - 3) + "..."
-                              : item.description}
+                            {item.message[item.message.length]}
                           </Text>
                           {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
                     <Text>borrar</Text>
@@ -247,6 +325,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 80
   },
+  superpadre: {
+    padding: 10,
+    flex: 1,
+    paddingTop: 40,
+  },
+  padre: {},
   containerProducts3: {
     backgroundColor: "#34b5ba",
     borderRadius: 20,
@@ -389,10 +473,10 @@ const styles = StyleSheet.create({
     width: 250
   },
   imagenItem: {
-    width: 75,
-    height: 75,
+    width: 76,
+    height: 76,
     borderWidth: 1,
-    borderRadius: 50,
+    borderRadius: 38,
     borderColor: "#34b5ba",
     marginRight: 20
   },

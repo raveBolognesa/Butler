@@ -113,7 +113,10 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   productoAuthor: {
-    marginTop: 20
+    marginTop: 20,
+    flex:1,
+    alignItems:"center",
+    justifyContent:"center"
   },
   itemHeader: {
     flex: 1,
