@@ -11,7 +11,7 @@ router.post('/newproduct', (req, res, next) => {
         description,
         title,
         localization,
-        date } = req.body;
+        date,imgProduct } = req.body;
 
         const author = req.user
   
@@ -32,7 +32,8 @@ router.post('/newproduct', (req, res, next) => {
         title,
         author,
         localization,
-        date
+        date,
+        imgProduct
       }).save();
     })
     .then( user => res.json({status: 'Created Product', user}))

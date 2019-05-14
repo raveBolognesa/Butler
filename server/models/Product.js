@@ -8,7 +8,8 @@ const productSchema = new Schema(
     title: String,
     author: Object,
     localization: String,
-    date: String
+    date: String,
+    imgProduct: String
   },
   {
     timestamps: {

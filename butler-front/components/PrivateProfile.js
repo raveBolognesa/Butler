@@ -78,6 +78,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     borderWidth: 1,
+    borderRadius: 65,
+    borderColor: "#34b5ba",
+    marginRight: 20
+  },
+  buttonContainer2: {
+    width: 200,
+    padding: 10,
+    borderRadius: 20,
+    borderWidth: 1,
     borderColor: "#34b5ba"
   },
   buttonContainer2: {
@@ -230,10 +239,10 @@ const styles = StyleSheet.create({
   newButtonContainer: {
     marginTop: 15,
     backgroundColor: "#34b5ba",
-    padding: 10,
-    borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#34b5ba"
+    borderRadius: 20,
+    borderColor: "#34b5ba",
+    height: 350
   },
   newButtonContainer2: {
     marginTop: 15,

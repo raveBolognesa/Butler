@@ -32,25 +32,29 @@ export default class HomeScreen extends React.Component {
       createAt: undefined,
       picture: undefined,
 
-    mapRegion: { latitude: 40.39, longitude: -3.69, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
-    locationResult: null,
-    location: {coords: { latitude: 40.39, longitude: -3.69}},
+      mapRegion: {
+        latitude: 40.39,
+        longitude: -3.69,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      },
+      locationResult: null,
+      location: { coords: { latitude: 40.39, longitude: -3.69 } }
     };
   }
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
+    if (status !== "granted") {
       this.setState({
-        locationResult: 'Permission to access location was denied',
-        location,
+        locationResult: "Permission to access location was denied",
+        location
       });
     }
- 
+
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ locationResult: JSON.stringify(location), location, });
+    this.setState({ locationResult: JSON.stringify(location), location });
   };
- 
 
   openProduct(x) {
     this.setState({ ...this.state, product: x });
@@ -86,56 +90,66 @@ export default class HomeScreen extends React.Component {
             <Text style={styles.productsTitle}>
               Productos {this.state.product}
             </Text>
-            <Products openProduct={x => this.openProduct(x)} />
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: "white",
+                borderRadius: 20,
+                borderColor: "#34b5ba",
+                borderWidth: 1
+              }}
+            >
+              <Products openProduct={x => this.openProduct(x)} />
+            </View>
           </View>
         </View>
       );
     } else {
       return (
-          <ScrollView>
+        <ScrollView>
         <View style={styles.containerOneProduct}>
-            <View style={styles.containerProduct}>
-              <View style={styles.productHeader}>
-                <View>
-                  <Image
-                    style={styles.imagenItem1}
-                    source={require("../assets/images/icon.png")}
-                  />
-                </View>
-                <View style={styles.tituloDerecha}>
-                  <View style={styles.barradetitulo}>
-                    <Text style={styles.tituloBlanco}>{this.state.title}</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.subtituloBlanco}>
-                      {this.state.price}
-                    </Text>
-                    <Text style={styles.subtituloBlanco}>
-                      {this.state.date}
-                    </Text>
-                  </View>
-                  <View>
-                    <TouchableOpacity style={styles.botonCabron}>
-                      <Text style={styles.buttonX}>BUY</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+          <View style={styles.containerProduct}>
+            <View style={styles.productHeader}>
+              <View>
+                <Image
+                  style={styles.imagenItem1}
+                  source={require("../assets/images/icon.png")}
+                />
               </View>
-              <View style={styles.fondoblanco}>
-                <Text>{this.state.createAt}</Text>
-                <Text numberOfLines={3}>
-                  {this.state.description.length > 170
-                    ? this.state.description.substring(0, 170 - 3) + "..."
-                    : this.state.description}
-                </Text>
+              <View style={styles.tituloDerecha}>
+                <View style={styles.barradetitulo}>
+                  <Text style={styles.tituloBlanco}>{this.state.title}</Text>
+                </View>
+                <View>
+                  <Text style={styles.subtituloBlanco}>{this.state.price}</Text>
+                  <Text style={styles.subtituloBlanco}>{this.state.date}</Text>
+                </View>
+                <View>
+                  <TouchableOpacity style={styles.botonCabron}>
+                    <Text style={styles.buttonX}>BUY</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-            <View style={styles.mapaBorde}>
-              <MapView
-                style={styles.productoMapa}
-                initialRegion={{ latitude: this.state.location.coords.latitude, longitude: this.state.location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }}
-                
-              />
+            <View style={styles.fondoblanco}>
+              <Text>{this.state.createAt}</Text>
+              <Text numberOfLines={3}>
+                {this.state.description.length > 170
+                  ? this.state.description.substring(0, 170 - 3) + "..."
+                  : this.state.description}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.mapaBorde}>
+            <MapView
+              style={styles.productoMapa}
+              initialRegion={{
+                latitude: this.state.location.coords.latitude,
+                longitude: this.state.location.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421
+              }}
+            />
             </View>
             <View style={styles.productoAuthor}>
               <TouchableOpacity onPress={() => this.props.openProduct(x)}>
@@ -170,7 +184,7 @@ export default class HomeScreen extends React.Component {
             <View>
               <TouchableOpacity
                 style={styles.buttonContainer}
-                onPress={() => navigate("Links", { id: this.state.author })}
+                onPress={() => navigate("Links", { speaker: this.state.author,id:this.state.product })}
               >
                 <Text style={styles.buttonText}>CHAT</Text>
               </TouchableOpacity>
@@ -185,7 +199,7 @@ export default class HomeScreen extends React.Component {
                 <Text style={styles.buttonText2}>BACK</Text>
               </TouchableOpacity>
             </View>
-        </View>
+          </View>
           </ScrollView>
       );
     }
@@ -195,18 +209,17 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     padding: 10,
-    marginTop: 20,
-    marginBottom: 80
+    marginTop: 30
   },
   containerOneProduct: {
     flex: 1,
     backgroundColor: "#fff",
     padding: 10,
-    marginTop: 20,
+    marginTop: 30,
   },
   containerProducts: {
+    flex: 1,
     backgroundColor: "#34b5ba",
     borderRadius: 20,
     borderWidth: 1,
@@ -217,6 +230,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 10,
     marginTop: 10,
+    marginBottom: 10,
     fontWeight: "bold"
   },
 
@@ -234,7 +248,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderWidth: 1,
-    borderRadius: 75,
+    borderRadius: 60,
     borderColor: "whitesmoke",
     backgroundColor: "whitesmoke",
     marginRight: 20
@@ -319,14 +333,14 @@ const styles = StyleSheet.create({
     height: 40
   },
   botonCabron: {
-    marginTop: 5
-  },
-  buttonX: {
+    marginTop: 5,
     backgroundColor: "whitesmoke",
     padding: 5,
     borderWidth: 1,
-    borderRadius: 50,
-    borderColor: "#34b5ba",
+    borderRadius: 10,
+    borderColor: "#34b5ba"
+  },
+  buttonX: {
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold"
