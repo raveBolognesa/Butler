@@ -184,7 +184,7 @@ export default class HomeScreen extends React.Component {
             <View>
               <TouchableOpacity
                 style={styles.buttonContainer}
-                onPress={() => navigate("Links", { id: this.state.author })}
+                onPress={() => navigate("Links", { speaker: this.state.author,id:this.state.product })}
               >
                 <Text style={styles.buttonText}>CHAT</Text>
               </TouchableOpacity>

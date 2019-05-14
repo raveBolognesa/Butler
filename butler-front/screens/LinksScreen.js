@@ -22,6 +22,10 @@ export default class LinksScreen extends React.Component {
     // this.chatArea = ""
     this.state = {
       height: 40,
+      soy: "x",
+          jamon:{
+            message:""
+          },
       // chat:"zz",
       // message: "m",
       // time:1
@@ -40,16 +44,26 @@ export default class LinksScreen extends React.Component {
   // }
 
   traerProductos(x) {
-    Axios.get("https://butler-back.herokuapp.com/sock/allchats").then(
-      res => {
-        const producto = res.data;
-        this.setState({
-          ...this.state,
-          products: producto,
-          id: x
-        });
-      }
-    );
+    Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser")
+      .then(miau=>{
+        const birra = miau.data.username;
+
+        Axios.get("https://butler-back.herokuapp.com/sock/allchats")
+          .then(
+          res => {
+            const producto = res.data;
+            this.setState({
+              ...this.state,
+              products: producto,
+              id: x,
+              soy: birra,
+              jamon:{
+                message:""
+              }
+            });
+          }
+        );
+    });
   }
 
   cargarUnChat(x){
@@ -63,10 +77,20 @@ export default class LinksScreen extends React.Component {
         });
       }
     );
-
+  }
+  cargarUnChat2(x){
+    Axios.get(`https://butler-back.herokuapp.com/sock/${x}/oneChat`).then(
+      res => {
+        const producto = res.data;
+        this.setState({
+          ...this.state,
+          jamon: producto
+        });
+      }
+    );
   }
   mandarUnMensaje(x){
-    Axios.post(`https://butler-back.herokuapp.com/sock/chat/${x}/addmesage`,{newmesage:this.state.mensaje}).then(res=>{
+    Axios.post(`https://butler-back.herokuapp.com/sock/chat/${x}/addmesage`,{newmesage:{elmensaje:this.state.mensaje,lomando: this.state.soy}}).then(res=>{
       const producto = res.data;
       this.socket.emit("messageSent", "mensaje");
 
@@ -79,17 +103,42 @@ export default class LinksScreen extends React.Component {
 
   componentDidMount() {
     const { navigation } = this.props;
-    const itemId = navigation.getParam("id");
+    var itemId = navigation.getParam("id");
+    if(itemId){
+      this.crearUnChat(itemId)
+    }
+    if(this.state.counter === "a"){
+      itemId = "";
+    }
 
     this.traerProductos(itemId);
 
     this.socket.on("newMessage", message =>{
-      this.cargarUnChat(this.state.id)
+      this.cargarUnChat(this.state.id);message;
     });
 
     // setInterval(()=>{
     //   Axios.get("https://butler-back.herokuapp.com/allRooms").then(res =>this.setState({...this.state,chat: Object.keys(res.data),time: this.state.time +=1}));
     // },1000)
+  }
+  componentDidUpdate(){
+
+  }
+  componentWillReceiveProps(){
+
+    const { navigation } = this.props;
+    var itemId = navigation.getParam("id");
+    if(itemId){
+      this.crearUnChat(itemId);
+      this.traerProductos(itemId);
+      this.cargarUnChat(itemId);
+
+    }
+
+
+    this.socket.on("newMessage", message =>{
+      this.cargarUnChat(this.state.id);
+    });
   }
 
   changeHeight(x) {
@@ -98,13 +147,26 @@ export default class LinksScreen extends React.Component {
       ? this.setState({ ...this.state, height: 80, mensaje: x })
       : this.setState({ ...this.state, height: 40, mensaje: x });
   }
+  crearUnChat(x){
+    Axios.post("https://butler-back.herokuapp.com/sock/newRoom",{message:["Escribe"] , speaker: "otro", product: x})
+      .then(res=> Promise.resolve(res.data.chatData._id))
+      .then(id => this.setState({
+        ...this.state,
+        id: id
+      }), ()=>{this.cargarUnChat(id)})
+  }
 
   render() {
     
+    const mismensajes = this.state.jamon.message;
     const datos = this.state.products;
+    console.log(this.state.id)
     if (this.state.id) {
+      this.cargarUnChat2(this.state.id);
       return (
+                      <ScrollView style={{ flex:1}}>
         <View style={styles.superpadre}>
+
           <View
             style={{
               backgroundColor: "#34b5ba",
@@ -124,9 +186,9 @@ export default class LinksScreen extends React.Component {
                   </View>
                   <View  style={{ width: 40, height: 20,paddingRight:5 }}>
                     <TouchableOpacity
-                      style={{ width: 40, height: 20 }}
+                      style={{ width: 40, height: 40 }}
                       onPress={() =>
-                        this.setState({ ...this.state, id: "" })
+                        this.setState({ ...this.state, id: ""})
                       }
                     >
                       <Text>Exit</Text>
@@ -144,31 +206,27 @@ export default class LinksScreen extends React.Component {
               <SectionList
                   sections={[
                     {
-                      data: this.state.jamon.message
+                      data: mismensajes
                     }
                   ]}
-                  renderItem={({ item }) => (
+                  renderItem={({ item }) => {
+                    var x = item.lomando;
+                    if(x === this.state.soy){
+                      return(
+                        <Text style={styles.mensajesDerecha}>{item.elmensaje}</Text>
+                        )
+                        
+                      }else{
+                        return(
+                          <Text style={styles.mensajesIzquierda}>{item.elmensaje}</Text>
 
-
-                    <Text>{item}</Text>
-
-
-                    )}
+                      )
+                    }
+                    }}
                   keyExtractor={(item, index) => index}
                 />
 
-                <Text style={styles.mensajesIzquierda}>mis mensajes</Text>
-                <Text style={styles.mensajesDerecha}>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
-                <Text>mis mensajes</Text>
+                
               </ScrollView>
                       </View>
             </View>
@@ -214,6 +272,8 @@ export default class LinksScreen extends React.Component {
             </View>
           </View>
         </View>
+        </ScrollView >
+
       );
     } else {
       return (
