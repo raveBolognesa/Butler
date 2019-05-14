@@ -403,7 +403,7 @@ export default class PrivateProfile extends Component {
         description: this.state.description,
         email: this.state.email,
         phone: this.state.phone,
-        // imgProfile: this.state.imgProfile
+        imgProfile: this.state.imgProfile
       }
     )
       .then(res =>
