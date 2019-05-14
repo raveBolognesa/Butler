@@ -6,9 +6,10 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  CameraRoll
 } from "react-native";
-import { MapView} from 'expo';
+import { MapView } from "expo";
 import { WebBrowser } from "expo";
 import Touchable from "react-native-platform-touchable";
 import Axios from "axios";
@@ -241,7 +242,51 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#34b5ba",
     marginBottom: 20
-  }
+  },
+  titleItem: {
+    padding: 10,
+    flex: 1,
+    flexDirection: "row",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#34b5ba"
+  },
+  text: {
+    fontSize: 28,
+    margin: 20
+  },
+  text2: {
+    fontSize: 20,
+    margin: 10,
+    color: "#34b5ba"
+
+  },
+  buttonText: {
+    fontSize: 21
+  },
+  button: {
+    padding: 13,
+    margin: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#34b5ba",
+  },
+  input: {
+    width: 300,
+    height: 40,
+    backgroundColor: "rgba(225,225,225,0.2)",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#34b5ba",
+    marginBottom: 10,
+    padding: 10,
+    color: "#000"
+  },
+  containerImages: {
+    padding: 10,
+    marginTop: 20,
+    textAlign: "center"
+  },
 });
 
 export default class PrivateProfile extends Component {
@@ -256,20 +301,32 @@ export default class PrivateProfile extends Component {
       title: "String",
       localization: "String",
       date: "String",
-      campo: "products"
+      campo: "products",
+      imgProfile: null,
+      topText: "",
+      bottomText: "",
+      username: "",
+      description: "",
+      phone: ""
     };
   }
 
-  cogerCervezas() {
+  getUser() {
+    console.log("entramos en getUser")
     Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser").then(
       res => {
-        const birra = res.data.username;
+        const username = res.data.username;
+        const description = res.data.descripcion
+        const phone = res.data.phone
+        console.log(res.data)
         this.setState({
           ...this.state,
-          usuario: birra
+          username: username,
+          description: description,
+          phone: phone
         });
       }
-    );
+    ) .catch(err => this.setState({ ...this.state, error: "Error" }));
   }
   create() {
     return this.props.navigation.navigate("ProductCreate");
@@ -291,7 +348,8 @@ export default class PrivateProfile extends Component {
           title: "",
           localization: "",
           date: "",
-          vista: "perfilprivado"
+          vista: "perfilprivado",
+          picture: ""
         })
       )
       .catch(err => this.setState({ ...this.state, error: "Error" }));
@@ -359,9 +417,38 @@ export default class PrivateProfile extends Component {
       })
     );
   }
+  _onChoosePic = async () => {
+    const { cancelled, uri } = await Expo.ImagePicker.launchImageLibraryAsync();
+    if (!cancelled) {
+      this.setState({ imgProfile: uri });
+      // console.log(uri) // this logs correctly
+      // TODO: why isn't this showing up inside the Image on screen?
+    }
+  };
+
+  // When "Take" is pressed, we show the user's camera so they
+  // can take a photo to show inside the image view on screen.
+  _onTakePic = async () => {
+    const { cancelled, uri } = await Expo.ImagePicker.launchCameraAsync({});
+    if (!cancelled) {
+      this.setState({ imgProfile: uri });
+    }
+  };
+
+  // When "Save" is pressed, we snapshot whatever is shown inside
+  // of "this.imageView" and save it to the device's camera roll.
+  _onSave = async () => {
+    const uri = await Expo.takeSnapshotAsync(this.imageView, {});
+    await CameraRoll.saveToCameraRoll(uri);
+    this.setState({ ...this.state, imgProfile: uri})
+
+    console.log(this.state.imgProfile)
+    // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
+  };
 
   componentDidMount() {
-    this.cogerCervezas();
+    console.log(this.state.imgProfile)
+    this.getUser();
   }
   render() {
     const region = {
@@ -378,7 +465,7 @@ export default class PrivateProfile extends Component {
               <View>
                 <Image
                   style={styles.imagenPerfil}
-                  source={require("../assets/images/icon.png")}
+                  source={{ uri: this.state.imgProfile }}
                 />
               </View>
               <View style={styles.cabeceraDerecha}>
@@ -393,17 +480,25 @@ export default class PrivateProfile extends Component {
                   <Text styles={styles.item}>products</Text>
                 </View>
                 <View style={styles.buttonContainer2}>
-                  <Text style={styles.buttonText2}>boton</Text>
+                  <Touchable
+                    onPress={() =>
+                      this.setState({ ...this.state, vista: "editarPerfil" })
+                    }
+                  >
+                    <View>
+                      <Text style={styles.buttonText2}>Editar Perfil</Text>
+                    </View>
+                  </Touchable>
                 </View>
               </View>
             </View>
             <View>
-              <Text style={styles.usuario}> usuario {this.state.usuario}</Text>
-              <Text style={styles.descripcion}>Description:</Text>
+              <Text style={styles.usuario}> {this.state.username}</Text>
+              <Text style={styles.descripcion}>{this.state.description}:</Text>
             </View>
             <View style={styles.contacto}>
-              <Text>Phone:</Text>
-              <Text>Email:</Text>
+              <Text>{this.state.phone}:</Text>
+              <Text>{this.state.email}:</Text>
               <Text>Chat</Text>
             </View>
             <Categorias openProduct={x => this.openProduct(x)} />
@@ -425,6 +520,91 @@ export default class PrivateProfile extends Component {
             </Touchable>
           </Container>
         </ScrollView>
+      );
+    } else if (this.state.vista === "editarPerfil") {
+      return (
+        <Container>
+         
+          <Text style={styles.text}>PROFILE EDITOR</Text>
+          <View>
+            <TextInput
+              style={styles.input}
+              autoCapitalize="none"
+              onChangeText={text => this.setState({ username: text })}
+              autoCorrect={false}
+              keyboardType="default"
+              returnKeyType="next"
+              placeholder="Username"
+              placeholderTextColor="rgba(225,225,225,0.9)"
+            />
+             <TextInput
+              style={styles.input}
+              autoCapitalize="none"
+              onChangeText={text => this.setState({ description: text })}
+              autoCorrect={false}
+              keyboardType="default"
+              returnKeyType="next"
+              placeholder="Description"
+              placeholderTextColor="rgba(225,225,225,0.9)"
+            />
+
+            <TextInput
+              style={styles.input}
+              onChangeText={text => this.setState({ email: text })}
+              returnKeyType="next"
+              keyboardType="email-address"
+              placeholder="email"
+              placeholderTextColor="rgba(225,225,225,0.9)"
+            />
+            <TextInput
+              style={styles.input}
+              autoCapitalize="none"
+              onChangeText={text => this.setState({ phone: text })}
+              autoCorrect={false}
+              keyboardType="number-pad"
+              returnKeyType="next"
+              placeholder="Phone"
+              placeholderTextColor="rgba(225,225,225,0.9)"
+            />
+         
+          </View>
+
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => this.editarProducto()}
+          >
+            <Text style={styles.buttonText}>
+              Send
+            </Text>
+          </TouchableOpacity>
+          
+          <View style={styles.containerImages}>
+            <Text style={styles.text2}>Change your image</Text>
+
+            <Image
+              ref={ref => (this.imageView = ref)}
+              style={styles.imagenItem1}
+              source={{ uri: this.state.imgProfile }}
+            />
+
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={this._onChoosePic}
+              >
+                <Text style={styles.buttonText}>Choose</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.button} onPress={this._onTakePic}>
+                <Text style={styles.buttonText}>Take</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.button} onPress={this._onSave}>
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Container>
       );
     } else if (this.state.vista === "crearproducto") {
       return (
