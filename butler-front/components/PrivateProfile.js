@@ -311,7 +311,7 @@ export default class PrivateProfile extends Component {
       localization: "String",
       date: "String",
       campo: "products",
-      imgProfile: null,
+      imgProfile: "x",
       topText: "",
       bottomText: "",
       username: "",
@@ -325,14 +325,19 @@ export default class PrivateProfile extends Component {
     Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser").then(
       res => {
         const username = res.data.username;
-        const description = res.data.descripcion
-        const phone = res.data.phone
+        const description = res.data.descripcion;
+        const email = res.data.email;
+        const phone = res.data.phone;
+        const imgProfile = res.data.imgProfile;
+
         console.log(res.data)
         this.setState({
           ...this.state,
           username: username,
           description: description,
-          phone: phone
+          phone: phone,
+          email: email,
+          imgProfile: imgProfile
         });
       }
     ) .catch(err => this.setState({ ...this.state, error: "Error" }));
@@ -385,6 +390,25 @@ export default class PrivateProfile extends Component {
           title: "",
           localization: "",
           date: "",
+          vista: "perfilprivado"
+        })
+      )
+      .catch(err => this.setState({ ...this.state, error: "Error" }));
+  }
+  editarPerfil() {
+    Axios.post(
+      `https://butler-back.herokuapp.com/api/auth/${this.state.username}/edit`,
+      {
+        username: this.state.username,
+        description: this.state.description,
+        email: this.state.email,
+        phone: this.state.phone,
+        // imgProfile: this.state.imgProfile
+      }
+    )
+      .then(res =>
+        this.setState({
+          ...this.state,
           vista: "perfilprivado"
         })
       )
@@ -534,8 +558,12 @@ export default class PrivateProfile extends Component {
       return (
         <Container>
          
-          <Text style={styles.text}>PROFILE EDITOR</Text>
+          <Text style={styles.text}>PROFILE EDITOR{this.state.error}</Text>
           <View>
+            <Text>{this.state.username}</Text>
+            <Text>{this.state.phone}</Text>
+            <Text>{this.state.email}</Text>
+            <Text>{this.state.description}</Text>
             <TextInput
               style={styles.input}
               autoCapitalize="none"
@@ -580,7 +608,7 @@ export default class PrivateProfile extends Component {
 
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={() => this.editarProducto()}
+            onPress={() => this.editarPerfil()}
           >
             <Text style={styles.buttonText}>
               Send

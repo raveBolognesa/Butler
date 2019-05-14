@@ -16,8 +16,6 @@ import io from 'socket.io-client';
 
 import styled from "styled-components/native";
 
-import styled from "styled-components/native";
-
 export default class LinksScreen extends React.Component {
   constructor(props) {
     super(props);

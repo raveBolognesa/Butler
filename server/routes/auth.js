@@ -91,6 +91,18 @@ router.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 })
 
+//EDIT
+
+router.post('/:username/edit', (req, res, next) => { 
+  User.updateOne({username: req.params.username}, req.body)
+    .then(updated => {
+      res.json(updated);
+    })
+    .catch(err => {
+      res.json({message:'./error', err})
+    })
+})
+
 
 
 
