@@ -12,6 +12,8 @@ const userSchema = new Schema(
     chats: Array,
     images: String,
     comments: String,
+    description:String,
+    imgProfile: String
   },
   {
     timestamps: {
