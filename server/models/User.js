@@ -11,7 +11,9 @@ const userSchema = new Schema(
     rating: String,
     chats: Array,
     images: String,
-    comments: String
+    comments: String,
+    description:String,
+    imgProfile: String
   },
   {
     timestamps: {

@@ -153,7 +153,7 @@ export default class Signup extends Component {
   render() {
     const datos = this.state.productos;
     return (
-      <View style={styles.viewProducts}>
+      <View style={{padding:10}}>
         <ScrollView>
           <SectionList
             sections={[
