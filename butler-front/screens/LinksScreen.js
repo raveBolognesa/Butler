@@ -16,6 +16,8 @@ import io from 'socket.io-client';
 
 import styled from "styled-components/native";
 
+import styled from "styled-components/native";
+
 export default class LinksScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -44,6 +46,7 @@ export default class LinksScreen extends React.Component {
   // }
 
   traerProductos(x) {
+
     Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser")
       .then(miau=>{
         const birra = miau.data.username;

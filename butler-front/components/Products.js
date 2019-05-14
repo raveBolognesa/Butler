@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
     width: 250
   },
   imagenItem: {
-    width: 76,
-    height: 76,
+    width: 75,
+    height: 75,
     borderWidth: 1,
-    borderRadius: 38,
+    borderRadius: 50,
     borderColor: "#34b5ba",
     marginRight: 20
   },
@@ -153,7 +153,7 @@ export default class Signup extends Component {
   render() {
     const datos = this.state.productos;
     return (
-      <View style={{padding:10}}>
+      <View style={styles.viewProducts}>
         <ScrollView>
           <SectionList
             sections={[

@@ -123,7 +123,7 @@ export default class SplashPage extends Component {
         <ScrollView>
           <Container>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Main")}
+              /* onPress={() => this.props.navigation.navigate("Main")} */
             >
               <Image
                 style={{

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import { WebBrowser, Constants, MapView, Location, Permissions } from "expo";
+import { WebBrowser,  Constants, MapView, Location, Permissions } from "expo";
 
 import { MonoText } from "../components/StyledText";
 import Products from "../components/Products";
