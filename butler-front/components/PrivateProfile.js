@@ -151,10 +151,10 @@ const styles = StyleSheet.create({
     width: 250
   },
   imagenItem: {
-    width: 75,
-    height: 75,
+    width: 76,
+    height: 76,
     borderWidth: 1,
-    borderRadius: 50,
+    borderRadius: 38,
     borderColor: "#34b5ba",
     marginRight: 20
   },
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderWidth: 1,
-    borderRadius: 75,
+    borderRadius: 60,
     borderColor: "whitesmoke",
     backgroundColor: "whitesmoke",
     marginRight: 20
@@ -513,9 +513,9 @@ export default class PrivateProfile extends Component {
                   <Text styles={styles.item}>12</Text>
                 </View>
                 <View style={styles.cabeceraStadisticas}>
-                  <Text styles={styles.item}>Rating</Text>
-                  <Text styles={styles.item}>buys</Text>
-                  <Text styles={styles.item}>products</Text>
+                  <Text styles={styles.item}>Sells</Text>
+                  <Text styles={styles.item}>Buys</Text>
+                  <Text styles={styles.item}>Prods</Text>
                 </View>
                 <View style={styles.buttonContainer2}>
                   <Touchable

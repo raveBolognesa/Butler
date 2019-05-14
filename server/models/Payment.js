@@ -2,13 +2,14 @@ const mongoose = require('mongoose');
 const Schema   = mongoose.Schema;
 
 const paymentSchema = new Schema({
-  idUser: {type: Schema.Types.ObjectId, ref:'User'},
-  idGrupo: {type: Schema.Types.ObjectId, ref:'Group'},	
-  idGroupLeader: {type: Schema.Types.ObjectId, ref:'User'},
-  quota: Number,
-  status: String,
-  limitDay: Date,
-  invoice: String
+  
+  price: String,
+  description: String,
+  title: String,
+  author: Object,
+  localization: String,
+  date: String,
+  imgProduct: String
 }, {
   timestamps: {
     createdAt: 'created_at',

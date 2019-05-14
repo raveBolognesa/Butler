@@ -22,10 +22,10 @@ export default class LinksScreen extends React.Component {
     // this.chatArea = ""
     this.state = {
       height: 40,
-      soy: "x",
-          jamon:{
-            message:""
-          },
+      soy: "x",          
+      jamon:{
+        message:{elmensaje: "escribe",lomando:"this.state."}
+      },
       // chat:"zz",
       // message: "m",
       // time:1
@@ -49,17 +49,18 @@ export default class LinksScreen extends React.Component {
       .then(miau=>{
         const birra = miau.data.username;
 
-        Axios.get("https://butler-back.herokuapp.com/sock/allchats")
+        Axios.get("https://butler-back.herokuapp.com/sock/todosmischats")
           .then(
           res => {
             const producto = res.data;
+            console.log("los productos: ",producto[0])
             this.setState({
               ...this.state,
               products: producto,
               id: x,
               soy: birra,
               jamon:{
-                message:""
+                message:{elmensaje: "escribe",lomando:birra}
               }
             });
           }
@@ -79,6 +80,20 @@ export default class LinksScreen extends React.Component {
       }
     );
   }
+  cargarUnChat3(x){
+    Axios.get(`https://butler-back.herokuapp.com/sock/${x}/oneChat`).then(
+      res => {
+        const producto = res.data;
+        this.setState({
+          ...this.state,
+          jamon: {
+            message:{elmensaje: "escribe",lomando:this.state.soy}
+          },
+          id: x
+        });
+      }
+    );
+  }
   cargarUnChat2(x){
     Axios.get(`https://butler-back.herokuapp.com/sock/${x}/oneChat`).then(
       res => {
@@ -91,22 +106,28 @@ export default class LinksScreen extends React.Component {
     );
   }
   mandarUnMensaje(x){
-    Axios.post(`https://butler-back.herokuapp.com/sock/chat/${x}/addmesage`,{newmesage:{elmensaje:this.state.mensaje,lomando: this.state.soy}}).then(res=>{
+    Axios.post(`https://butler-back.herokuapp.com/sock/chat/${x}/addmesage`,{newmesage:{elmensaje:this.state.mensaje,lomando: this.state.soy}})
+    .then(res=>{
       const producto = res.data;
-      this.socket.emit("messageSent", "mensaje");
+      this.socket.emit("messageSent", mensaje=>{
 
         this.setState({
           ...this.state,
           jamon: producto,
           id: x});
+
+      });
+
     });
   }
 
   componentDidMount() {
     const { navigation } = this.props;
     var itemId = navigation.getParam("id");
+
+    var speakerName = navigation.getParam("speaker");
     if(itemId){
-      this.crearUnChat(itemId)
+      this.crearUnChat(itemId,speakerName)
     }
     if(this.state.counter === "a"){
       itemId = "";
@@ -115,7 +136,7 @@ export default class LinksScreen extends React.Component {
     this.traerProductos(itemId);
 
     this.socket.on("newMessage", message =>{
-      this.cargarUnChat(this.state.id);message;
+      this.cargarUnChat(this.state.id);
     });
 
     // setInterval(()=>{
@@ -125,12 +146,14 @@ export default class LinksScreen extends React.Component {
   componentDidUpdate(){
 
   }
+  
   componentWillReceiveProps(){
 
     const { navigation } = this.props;
     var itemId = navigation.getParam("id");
+    var speakerName = navigation.getParam("speaker");
     if(itemId){
-      this.crearUnChat(itemId);
+      this.crearUnChat(itemId,speakerName);
       this.traerProductos(itemId);
       this.cargarUnChat(itemId);
 
@@ -148,22 +171,26 @@ export default class LinksScreen extends React.Component {
       ? this.setState({ ...this.state, height: 80, mensaje: x })
       : this.setState({ ...this.state, height: 40, mensaje: x });
   }
-  crearUnChat(x){
-    Axios.post("https://butler-back.herokuapp.com/sock/newRoom",{message:["Escribe"] , speaker: "otro", product: x})
+  crearUnChat(x,y){
+    Axios.post("https://butler-back.herokuapp.com/sock/newRoom",{message:[] , speaker: y, product: x})
       .then(res=> Promise.resolve(res.data.chatData._id))
       .then(id => this.setState({
         ...this.state,
-        id: id
-      }), ()=>{this.cargarUnChat(id)})
+        id: id,
+        jamon:{
+          message:{elmensaje: "escribe",lomando:this.state.soy}
+        }
+      }), ()=>{this.cargarUnChat3(id)})
   }
 
   render() {
     
-    const mismensajes = this.state.jamon.message;
+    const mismensajes = this.state.jamon.message ? this.state.jamon.message : {elmensaje: "escribe",lomando:this.state.soy};
+    console.log("los mensajes del chat", mismensajes);
     const datos = this.state.products;
-    console.log(this.state.id)
+    console.log("el id de el chat en el que estoy:",this.state.id)
     if (this.state.id) {
-      this.cargarUnChat2(this.state.id);
+     this.cargarUnChat2(this.state.id);
       return (
                       <ScrollView style={{ flex:1}}>
         <View style={styles.superpadre}>

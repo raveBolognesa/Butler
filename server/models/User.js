@@ -13,7 +13,9 @@ const userSchema = new Schema(
     images: String,
     comments: String,
     description:String,
-    imgProfile: String
+    imgProfile: String,
+    buys:Array,
+    sells:Array
   },
   {
     timestamps: {

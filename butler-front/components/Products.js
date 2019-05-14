@@ -136,7 +136,7 @@ export default class Signup extends Component {
   }
 
   traerProductos() {
-    Axios.get("https://butler-back.herokuapp.com/api/products/all").then(
+    Axios.get("https://butler-back.herokuapp.com/api/products/losproductos").then(
       res => {
         const producto = res.data;
         this.setState({

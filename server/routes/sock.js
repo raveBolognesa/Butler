@@ -33,7 +33,7 @@ router.post("/newRoom", (req, res) => {
   if (!title) {
     title = product;
   }
-  let owner = "rafa";
+  let owner = req.user.username;
   Chat.create({ owner, message, speaker, product, title })
     .then(chatData => {
       io.of(chatData._id).on("connection", socket => {
@@ -53,7 +53,7 @@ router.post("/newRoom", (req, res) => {
         { $push: { chats: chatData._id } }
       ).then(updated => {
         return User.update(
-          { username: "alberto" },
+          { username: speaker },
           { $push: { chats: chatData._id } }
         )
       })
@@ -105,6 +105,16 @@ router.post("/chat/:id/addmesage", (req, res, next) => {
     .catch(err => {
       res.json({ message: "./error", err });
     });
+});
+
+router.get("/todosmischats",(req,res,next)=>{
+  Chat.find({$or:[{owner: req.user.username},{speaker:req.user.username}]})
+      .then(products => {
+        res.json(products);
+      })
+      .catch(err => {
+        res.json({message:'./error'})
+      })
 });
 
 module.exports = router;

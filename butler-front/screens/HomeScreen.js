@@ -21,6 +21,7 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      prodId:"",
       title: undefined,
       product: undefined,
       author: "",
@@ -43,6 +44,11 @@ export default class HomeScreen extends React.Component {
     };
   }
 
+  comprarProducto(){
+    Axios.post(`https://butler-back.herokuapp.com/api/products/${this.state.prodId}/comprar`);
+
+  }
+
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
@@ -60,9 +66,11 @@ export default class HomeScreen extends React.Component {
     this.setState({ ...this.state, product: x });
     Axios.get(
       `https://butler-back.herokuapp.com/api/products/${x}/oneproduct`
-    ).then(res =>
+    ).then(res =>{
+      console.log(res.data.product);
       this.setState({
         ...this.state,
+        prodId: res.data.product._id,
         title: res.data.product.title,
         author: res.data.product.author.username,
         phone: res.data.product.author.phone,
@@ -72,7 +80,7 @@ export default class HomeScreen extends React.Component {
         localization: res.data.product.localization,
         date: res.data.product.date,
         createAt: res.data.product.created_at
-      })
+      })}
     );
   }
 
@@ -125,7 +133,9 @@ export default class HomeScreen extends React.Component {
                   <Text style={styles.subtituloBlanco}>{this.state.date}</Text>
                 </View>
                 <View>
-                  <TouchableOpacity style={styles.botonCabron}>
+                  <TouchableOpacity style={styles.botonCabron}
+                  onPress={()=> this.comprarProducto()}
+                  >
                     <Text style={styles.buttonX}>BUY</Text>
                   </TouchableOpacity>
                 </View>

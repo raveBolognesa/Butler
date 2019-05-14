@@ -169,7 +169,7 @@ export default class Categorias extends Component {
   }
 
   traerProductos() {
-    Axios.get("https://butler-back.herokuapp.com/api/products/all").then(
+    Axios.get("https://butler-back.herokuapp.com/api/products/misproductos").then(
       res => {
         const producto = res.data;
         this.setState({
@@ -180,8 +180,34 @@ export default class Categorias extends Component {
     ).catch(error=> console.log(error));
     
   }
+
+  getUser() {
+    console.log("entramos en getUser")
+    Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser").then(
+      res => {
+        const buys = res.data.buys;
+        const sells = res.data.sells;
+
+        console.log(res.data)
+        this.setState({
+          ...this.state,
+          sells,buys
+        });
+      }
+    ) .catch(err => this.setState({ ...this.state, error: "Error" }));
+  }
+
+
+
+
   componentDidMount() {
     this.traerProductos();
+    this.getUser();
+  }
+  componentDidUpdate(){
+    this.traerProductos();
+    this.getUser();
+
   }
 
   render() {
@@ -202,15 +228,15 @@ export default class Categorias extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "buys" })}
+                    onPress={() => this.setState({ ...this.state, campo: "Buys" })}
                   >
-                    <Text>buys</Text>
+                    <Text>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "rating" })}
+                    onPress={() => this.setState({ ...this.state, campo: "Sells" })}
                   >
-                    <Text>rating</Text>
+                    <Text>Sells</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={jamon.fondoblanco}>
@@ -256,7 +282,7 @@ export default class Categorias extends Component {
                 </View>
               </View>
             );
-          } else if (this.state.campo === "buys") {
+          } else if (this.state.campo === "Buys") {
             return (
               <View style={jamon.categorias}>
                 <View style={jamon.cambio}>
@@ -270,28 +296,56 @@ export default class Categorias extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "buys" })}
+                    onPress={() => this.setState({ ...this.state, campo: "Buys" })}
                   >
-                    <Text>buys</Text>
+                    <Text>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "rating" })}
+                    onPress={() => this.setState({ ...this.state, campo: "Sells" })}
                   >
-                    <Text>rating</Text>
+                    <Text>Sells</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={jamon.fondoblanco}>
-                  <ScrollView>
-                    <Text>buys</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
+                <ScrollView>
+                    <SectionList
+                      sections={[
+                        {
+                          data: this.state.buys
+                        }
+                      ]}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          onPress={() => this.props.openProduct(item._id)}
+                        >
+                          <View style={styles.titleItem}>
+                            <View style={styles.item}>
+                              <Image
+                                source={require("../assets/images/icon.png")}
+                                style={styles.imagenItem}
+                              />
+                            </View>
+                            <View style={styles.item}>
+                              <View style={styles.itemHeader}>
+                                <Text style={styles.itemTitle}>
+                                  {item.title}
+                                </Text>
+      
+                                <Text style={styles.itemPrice}>{item.price}</Text>
+                              </View>
+                              <Text style={styles.itemDescription} numberOfLines={3}>
+                                {item.description}
+                              </Text>
+                              <TouchableOpacity onPress={() => this.borrar(item._id)}>
+                          <Text>borrar</Text>
+                        </TouchableOpacity>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      )}
+                      keyExtractor={(item, index) => index}
+                    />
                   </ScrollView>
                 </View>
               </View>
@@ -310,28 +364,56 @@ export default class Categorias extends Component {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "buys" })}
+                    onPress={() => this.setState({ ...this.state, campo: "Buys" })}
                   >
-                    <Text>buys</Text>
+                    <Text>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "rating" })}
+                    onPress={() => this.setState({ ...this.state, campo: "Sells" })}
                   >
-                    <Text>rating</Text>
+                    <Text>Sells</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={jamon.fondoblanco}>
-                  <ScrollView>
-                    <Text>rating</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
-                    <Text>Productos</Text>
+                <ScrollView>
+                    <SectionList
+                      sections={[
+                        {
+                          data: this.state.sells
+                        }
+                      ]}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          onPress={() => this.props.openProduct(item._id)}
+                        >
+                          <View style={styles.titleItem}>
+                            <View style={styles.item}>
+                              <Image
+                                source={require("../assets/images/icon.png")}
+                                style={styles.imagenItem}
+                              />
+                            </View>
+                            <View style={styles.item}>
+                              <View style={styles.itemHeader}>
+                                <Text style={styles.itemTitle}>
+                                  {item.title}
+                                </Text>
+      
+                                <Text style={styles.itemPrice}>{item.price}</Text>
+                              </View>
+                              <Text style={styles.itemDescription} numberOfLines={3}>
+                                {item.description}
+                              </Text>
+                              <TouchableOpacity onPress={() => this.borrar(item._id)}>
+                          <Text>borrar</Text>
+                        </TouchableOpacity>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      )}
+                      keyExtractor={(item, index) => index}
+                    />
                   </ScrollView>
                 </View>
               </View>
