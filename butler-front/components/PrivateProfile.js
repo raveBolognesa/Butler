@@ -14,6 +14,8 @@ import { WebBrowser } from "expo";
 import Touchable from "react-native-platform-touchable";
 import Axios from "axios";
 import Categorias from "../components/Categorias";
+import utf8 from "utf8";
+import base64 from 'base-64'
 
 import styled from "styled-components/native";
 
@@ -311,7 +313,7 @@ export default class PrivateProfile extends Component {
       localization: "String",
       date: "String",
       campo: "products",
-      imgProfile: "x",
+      imgProfile: "ZmlsZTovLy9kYXRhL3VzZXIvMC9ob3N0LmV4cC5leHBvbmVudC9jYWNoZS9FeHBlcmllbmNlRGF0YS8lMjU0MGFsZ29yaW5ldCUyNTJGYnV0bGVyLWZyb250L1JlYWN0TmF0aXZlLXNuYXBzaG90LWltYWdlNTE2NTQwNjMyMjY0MzQzNjgxMS5wbmc=",
       topText: "",
       bottomText: "",
       username: "",
@@ -473,7 +475,9 @@ export default class PrivateProfile extends Component {
   _onSave = async () => {
     const uri = await Expo.takeSnapshotAsync(this.imageView, {});
     await CameraRoll.saveToCameraRoll(uri);
-    this.setState({ ...this.state, imgProfile: uri})
+    var bytes = utf8.encode(uri);
+    var encoded =base64.encode(bytes);
+    this.setState({ ...this.state, imgProfile: encoded})
 
     console.log(this.state.imgProfile)
     // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
@@ -490,6 +494,7 @@ export default class PrivateProfile extends Component {
       latitudeDelta: 0.09,
       longitudeDelta: 0.04
     };
+    let decoder = (x)=> base64.decode(x);
     if (this.state.vista === "perfilprivado") {
       return (
         <ScrollView>
@@ -498,7 +503,7 @@ export default class PrivateProfile extends Component {
               <View>
                 <Image
                   style={styles.imagenPerfil}
-                  source={{ uri: this.state.imgProfile }}
+                  source={{ uri: decoder(this.state.imgProfile) }}
                 />
               </View>
               <View style={styles.cabeceraDerecha}>
