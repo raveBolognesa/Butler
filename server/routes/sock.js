@@ -28,6 +28,19 @@ io.on("connection", socket => {
   });
 });
 
+router.post("/newRoomDani", (req, res) => {
+  Chat
+    .find({product: "5cdb51ff3c2c590017ef1416", speaker: "Rafa", owner: "Pep5"})
+    .then(chatData => {
+      if (chatData.length > 0) {
+        res.json(chatData)
+      } else {
+
+      }
+      
+    })
+})
+
 router.post("/newRoom", (req, res) => {
   let { message, speaker, product, title } = req.body;
   if (!title) {

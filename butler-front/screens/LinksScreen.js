@@ -18,7 +18,10 @@ import styled from "styled-components/native";
 
 export default class LinksScreen extends React.Component {
   constructor(props) {
+    console.log("constructor")
     super(props);
+    console.log(props)
+    console.log("*".repeat(200))
     // this.chatArea = ""
     this.state = {
       height: 40,
@@ -67,6 +70,25 @@ export default class LinksScreen extends React.Component {
         );
     });
   }
+  traerProductosenMount() {
+
+    Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser")
+      .then(miau=>{
+        const birra = miau.data.username;
+
+        Axios.get("https://butler-back.herokuapp.com/sock/todosmischats")
+          .then(
+          res => {
+            const producto = res.data;
+            console.log("los productos: ",producto[0])
+            this.setState({
+              ...this.state,
+              products: producto
+            });
+          }
+        );
+    });
+  }
 
   cargarUnChat(x){
     Axios.get(`https://butler-back.herokuapp.com/sock/${x}/oneChat`).then(
@@ -90,6 +112,19 @@ export default class LinksScreen extends React.Component {
             message:{elmensaje: "escribe",lomando:this.state.soy}
           },
           id: x
+        });
+      }
+    );
+  }
+
+  cargarElUltimo(){
+    Axios.get(`https://butler-back.herokuapp.com/sock/allchats`).then(
+      res => {
+        const producto = res.data;
+        let ultimo = producto[producto.length -1]
+        this.setState({
+          ...this.state,
+          id: ultimo._id
         });
       }
     );
@@ -127,7 +162,7 @@ export default class LinksScreen extends React.Component {
 
     var speakerName = navigation.getParam("speaker");
     if(itemId){
-      this.crearUnChat(itemId,speakerName)
+      this.cargarUnChat3(itemId)
     }
     if(this.state.counter === "a"){
       itemId = "";
@@ -149,15 +184,22 @@ export default class LinksScreen extends React.Component {
   
   componentWillReceiveProps(){
 
+    console.log("componentWillReceiveProps");
+
     const { navigation } = this.props;
     var itemId = navigation.getParam("id");
     var speakerName = navigation.getParam("speaker");
     if(itemId){
-      this.crearUnChat(itemId,speakerName);
-      this.traerProductos(itemId);
-      this.cargarUnChat(itemId);
-
+      // this.crearUnChat(itemId,speakerName);
+      // this.traerProductos(itemId);
+      
     }
+    console.log("mi item id",itemId);
+    console.log("mi item estado",this.state.id);
+    console.log("mi item speake",speakerName);
+    this.traerProductosenMount();
+    this.cargarElUltimo();
+    this.cargarUnChat3(this.state.id);
 
 
     this.socket.on("newMessage", message =>{
@@ -184,13 +226,20 @@ export default class LinksScreen extends React.Component {
   }
 
   render() {
+
+    
     
     const mismensajes = this.state.jamon.message ? this.state.jamon.message : {elmensaje: "escribe",lomando:this.state.soy};
     console.log("los mensajes del chat", mismensajes);
     const datos = this.state.products;
     console.log("el id de el chat en el que estoy:",this.state.id)
+
+   
+
     if (this.state.id) {
+      
      this.cargarUnChat2(this.state.id);
+
       return (
                       <ScrollView style={{ flex:1}}>
         <View style={styles.superpadre}>
@@ -210,7 +259,7 @@ export default class LinksScreen extends React.Component {
               <View>
               <View style={styles.mensajes}>
                   <View  style={{ width: 300, height: 20 ,paddingLeft:5}}>
-                    <Text style={{color:"white",fontWeight:"bold"}}>{this.state.id}</Text>
+                    <Text style={{color:"white",fontWeight:"bold"}}>{this.state.jamon.title} con {this.state.jamon.owner === this.state.soy ? this.state.jamon.speaker : this.state.jamon.owner }</Text>
                   </View>
                   <View  style={{ width: 40, height: 20,paddingRight:5 }}>
                     <TouchableOpacity
@@ -325,7 +374,7 @@ export default class LinksScreen extends React.Component {
                       <View style={styles.titleItem}>
                         <View style={styles.item}>
                           <Image
-                            source={require("../assets/images/icon.png")}
+                            source={{ uri: item.imgChat}}
                             style={styles.imagenItem}
                           />
                         </View>
@@ -337,13 +386,13 @@ export default class LinksScreen extends React.Component {
                                 : item.title}
                             </Text>
 
-                            <Text style={styles.itemPrice}>{item.price}</Text>
+                            <Text style={styles.itemPrice}>{item.owner === this.state.soy ? item.speaker : item.owner }</Text>
                           </View>
                           <Text
                             style={styles.itemDescription}
                             numberOfLines={3}
                           >
-                            {item.message[item.message.length]}
+                            {item.message[1].elmensaje}
                           </Text>
                           {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
                     <Text>borrar</Text>
@@ -530,6 +579,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   viewProducts: {
+    
     marginTop: 5,
     paddingVertical: 10,
     padding: 10,

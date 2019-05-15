@@ -6,9 +6,12 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Linking
 } from "react-native";
 import { WebBrowser,  Constants, MapView, Location, Permissions } from "expo";
+import call from 'react-native-phone-call';
+
 
 import { MonoText } from "../components/StyledText";
 import Products from "../components/Products";
@@ -22,6 +25,8 @@ export default class HomeScreen extends React.Component {
     super(props);
     this.state = {
       prodId:"",
+      imgProduct: "",
+
       title: undefined,
       product: undefined,
       author: "",
@@ -63,6 +68,15 @@ export default class HomeScreen extends React.Component {
     this.setState({ locationResult: JSON.stringify(location), location });
   };
 
+  call (x)  {
+    //handler to make a call
+    let args = {
+      number: x,
+      prompt: false,
+    };
+    call(args).catch(console.error);
+  };
+
   openProduct(x) {
     this.setState({ ...this.state, product: x });
     Axios.get(
@@ -74,6 +88,8 @@ export default class HomeScreen extends React.Component {
         prodId: res.data.product._id,
         title: res.data.product.title,
         author: res.data.product.author.username,
+        authorImg: res.data.product.author.imgProfile,
+        img: res.data.product.imgProduct,
         phone: res.data.product.author.phone,
         email: res.data.product.author.email,
         description: res.data.product.description,
@@ -83,6 +99,14 @@ export default class HomeScreen extends React.Component {
         createAt: res.data.product.created_at
       })}
     );
+  }
+
+  crearUnChat(x,y){
+    const { navigate } = this.props.navigation;
+
+    Axios.post("https://butler-back.herokuapp.com/sock/newRoom",{message:[] , speaker: x, product: y})
+      .then(res=> Promise.resolve(res.data.chatData._id))
+      .then(id => navigate("Links", { speaker: this.state.author,id:id }) )
   }
 
   componentDidMount() {
@@ -122,7 +146,7 @@ export default class HomeScreen extends React.Component {
               <View>
                 <Image
                   style={styles.imagenItem1}
-                  source={require("../assets/images/icon.png")}
+                  source={{ uri: this.state.imgProduct }}
                 />
               </View>
               <View style={styles.tituloDerecha}>
@@ -130,8 +154,8 @@ export default class HomeScreen extends React.Component {
                   <Text style={styles.tituloBlanco}>{this.state.title}</Text>
                 </View>
                 <View>
-                  <Text style={styles.subtituloBlanco}>{this.state.price}</Text>
-                  <Text style={styles.subtituloBlanco}>{this.state.date}</Text>
+                  <Text style={styles.subtituloBlanco}>Price: {this.state.price / 100} €</Text>
+                  <Text style={styles.subtituloBlanco}>About dates... {this.state.date}</Text>
                 </View>
                 <View>
                   <TouchableOpacity style={styles.botonCabron}
@@ -143,12 +167,12 @@ export default class HomeScreen extends React.Component {
               </View>
             </View>
             <View style={styles.fondoblanco}>
-              <Text>{this.state.createAt}</Text>
-              <Text numberOfLines={3}>
+              <Text numberOfLines={3} style={{height: 70}}>
                 {this.state.description.length > 170
                   ? this.state.description.substring(0, 170 - 3) + "..."
                   : this.state.description}
               </Text>
+                  <Text style={{fontSize:10,color:"grey"}}>{this.state.createAt}</Text>
             </View>
           </View>
           <View style={styles.mapaBorde}>
@@ -163,12 +187,11 @@ export default class HomeScreen extends React.Component {
             />
             </View>
             <View style={styles.productoAuthor}>
-              <TouchableOpacity onPress={() => this.props.openProduct(x)}>
                 <View style={styles.titleItem}>
                   <View style={styles.item}>
                     <Image
-                      source={require("../assets/images/icon.png")}
-                      style={styles.imagenItem}
+                  source={{ uri: this.state.authorImg }}
+                  style={styles.imagenItem}
                     />
                   </View>
                   <View style={styles.item}>
@@ -179,23 +202,34 @@ export default class HomeScreen extends React.Component {
                           : this.state.author}
                       </Text>
                     </View>
+                    <TouchableOpacity
+                    onPress={()=>{
+                      this.call(this.state.phone)
+                    }}
+                    >
+
                     <Text style={styles.itemDescription}>
                       {this.state.phone}
                     </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                    onPress={() => 
+                      WebBrowser.openBrowserAsync(`https://mail.google.com/mail/?view=cm&fs=1&to=${this.state.email}&su=ButtlerApp`)}>
+
                     <Text style={styles.itemDescription}>
                       {this.state.email}
                     </Text>
+                    </TouchableOpacity>
                     {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
                     <Text>borrar</Text>
                   </TouchableOpacity> */}
                   </View>
                 </View>
-              </TouchableOpacity>
             </View>
             <View>
               <TouchableOpacity
                 style={styles.buttonContainer}
-                onPress={() => navigate("Links", { speaker: this.state.author,id:this.state.product })}
+                onPress={() => this.crearUnChat(this.state.author,this.state.title)  }
               >
                 <Text style={styles.buttonText}>CHAT</Text>
               </TouchableOpacity>
@@ -250,7 +284,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     borderColor: "#34b5ba",
-    height: 350,
+    height: 250,
     color: "whitesmoke",
     fontSize: 20,
     fontWeight: "800"
@@ -275,11 +309,11 @@ const styles = StyleSheet.create({
   },
   fondoblanco: {
     backgroundColor: "whitesmoke",
-    padding: 5,
+    padding: 10,
     borderColor: "#34b5ba",
     borderRadius: 20,
     borderWidth: 1,
-    height: 200
+    height: 100
   },
   tituloBlanco: {
     color: "whitesmoke",

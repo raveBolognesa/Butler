@@ -13,7 +13,7 @@ const userSchema = new Schema(
     images: String,
     comments: String,
     description:String,
-    imgProfile: {type:String, default:"L1VzZXJzL3JhZmFlbGFycmlldGFnYXJjaWEvTGlicmFyeS9EZXZlbG9wZXIvQ29yZVNpbXVsYXRvci9EZXZpY2VzLzExQTk4MThELTNGMTYtNDE5OC04MEM2LTlBNkVFRDIxNTRBQi9kYXRhL0NvbnRhaW5lcnMvRGF0YS9BcHBsaWNhdGlvbi9FNjNENkZEMC03MDZELTQ2QjMtODM3NS05NTU1ODkxRDAwNkQvdG1wL1JlYWN0QUJJMzJfMF8wTmF0aXZlL0FCNEEyNzRFLTM2RUItNEEwMy1CMzlDLUFBM0Q2MUFBRjQ4NS5wbmc="},
+    imgProfile: {type:String,default:"file:///Users/rafaelarrietagarcia/Library/Developer/CoreSimulator/Devices/11A9818D-3F16-4198-80C6-9A6EED2154AB/data/Containers/Data/Application/E63D6FD0-706D-46B3-8375-9555891D006D/Library/Caches/ExponentExperienceData/%2540ravebolognesa%252Fbutler-front/ImagePicker/A161ADB1-8462-4689-94D3-3A5159AA360C.jpg"},
     buys:Array,
     sells:Array
   },

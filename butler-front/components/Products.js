@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   itemDescription: {
-    width: 250
+    width: 220
   },
   imagenItem: {
     width: 76,
@@ -111,10 +111,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 200
+    width: 200,
   },
   itemPrice: {
-    marginLeft: 20,
     color: "#969696",
     fontSize: 15,
     fontWeight: "bold"
@@ -165,19 +164,24 @@ export default class Signup extends Component {
               <View style={styles.titleItem}>
                   <View style={styles.item}>
                     <Image
-                      source={{uri:"https://picsum.photos/200"}}
-                      style={styles.imagenItem}
+                  source={{ uri: item.imgProduct }}
+                  style={styles.imagenItem}
                     />
                   </View>
                   <View style={styles.item}>
                     <View style={styles.itemHeader}>
+                    <View>
+
                       <Text style={styles.itemTitle}>
-                        {item.title.length > 20
-                          ? item.title.substring(0, 20 - 3) + "..."
+                        {item.title.length > 14
+                          ? item.title.substring(0, 14 - 3) + "..."
                           : item.title}
                       </Text>
+                    </View>
+                      <View>
 
                       <Text style={styles.itemPrice}>{item.price}</Text>
+                      </View>
                     </View>
                     <Text style={styles.itemDescription} numberOfLines={3}>
                       {item.description.length > 100
