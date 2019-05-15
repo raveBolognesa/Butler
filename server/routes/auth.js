@@ -25,8 +25,7 @@ const login = (req, user) => {
 // SIGNUP
 router.post('/signup', (req, res, next) => {
 
-  const {username, password, email, phone,imgProfile,
-    description} = req.body;
+  const {username, password, email, phone} = req.body;
 
   console.log('username', username)
   console.log('password', password)
@@ -48,9 +47,7 @@ router.post('/signup', (req, res, next) => {
       username,
       password: hashPass,
       email,
-      phone,
-      imgProfile,
-      description
+      phone
     }).save();
   })
   .then( savedUser => login(req, savedUser)) // Login the user using passport

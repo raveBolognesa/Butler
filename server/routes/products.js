@@ -1,7 +1,12 @@
 const express = require('express');
+require('dotenv');
 const router  = express.Router();
 const Product = require('../models/Product');
 const User = require('../models/User');
+const uploadCloud = require('../config/cloudinary.js');
+const Picture = require('../models/Picture');
+
+
 
 
 
@@ -172,6 +177,23 @@ router.post('/newproduct', (req, res, next) => {
         res.json({message:'./error'})
       });
 
+      });
+
+
+      router.post('/subirfoto', uploadCloud.single('photo'), (req, res, next) => {
+        console.log(req.file)
+        const imgName = req.file.originalname;
+        const newPhoto = new Picture({imgName})
+        console.log(req.file.url);
+      
+        //actual write in mongo using mongoose
+        newPhoto.save()
+        .then(photo => {
+          res.json({url: req.file.url, photo: photo});
+        })
+        .catch(error => {
+          console.log(error);
+        })
       });
 
 

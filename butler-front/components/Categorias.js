@@ -204,11 +204,7 @@ export default class Categorias extends Component {
     this.traerProductos();
     this.getUser();
   }
-  componentDidUpdate(){
-    this.traerProductos();
-    this.getUser();
-
-  }
+  
 
   render() {
     const datos = this.state.productos;
@@ -220,21 +216,28 @@ export default class Categorias extends Component {
                 <View style={jamon.cambio}>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() =>
-                      this.setState({ ...this.state, campo: "products" })
+                    onPress={() =>{
+                      this.setState({ ...this.state, campo: "products" });
+                    
+    this.traerProductos();
+    this.getUser();
+                    }
                     }
                   >
                     <Text>Products</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "Buys" })}
+                    onPress={() => {this.setState({ ...this.state, campo: "Buys" });
+                    this.traerProductos();
+                  this.getUser();}}
                   >
                     <Text>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "Sells" })}
+                    onPress={() => {this.setState({ ...this.state, campo: "Sells" });this.traerProductos();
+                  this.getUser();}}
                   >
                     <Text>Sells</Text>
                   </TouchableOpacity>
@@ -288,21 +291,25 @@ export default class Categorias extends Component {
                 <View style={jamon.cambio}>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() =>
-                      this.setState({ ...this.state, campo: "products" })
+                    onPress={() =>{
+                      this.setState({ ...this.state, campo: "products" });
+                    
+                    }
                     }
                   >
                     <Text>Products</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "Buys" })}
+                    onPress={() => {this.setState({ ...this.state, campo: "Buys" });    this.traerProductos();    this.traerProductos();    this.traerProductos();this.traerProductos();
+                  this.getUser();}}
                   >
                     <Text>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "Sells" })}
+                    onPress={() => {this.setState({ ...this.state, campo: "Sells" });this.traerProductos();
+                  this.getUser();}}
                   >
                     <Text>Sells</Text>
                   </TouchableOpacity>
@@ -356,21 +363,25 @@ export default class Categorias extends Component {
                 <View style={jamon.cambio}>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() =>
-                      this.setState({ ...this.state, campo: "products" })
+                    onPress={() =>{
+                      this.setState({ ...this.state, campo: "products" });
+                    
+                    }
                     }
                   >
                     <Text>Products</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "Buys" })}
+                    onPress={() => {this.setState({ ...this.state, campo: "Buys" });    this.getUser();    this.getUser();    this.getUser();this.traerProductos();
+                  this.getUser();}}
                   >
                     <Text>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
-                    onPress={() => this.setState({ ...this.state, campo: "Sells" })}
+                    onPress={() => {this.setState({ ...this.state, campo: "Sells" });this.traerProductos();
+                  this.getUser();}}
                   >
                     <Text>Sells</Text>
                   </TouchableOpacity>

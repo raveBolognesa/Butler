@@ -15,7 +15,9 @@ import Touchable from "react-native-platform-touchable";
 import Axios from "axios";
 import Categorias from "../components/Categorias";
 import utf8 from "utf8";
-import base64 from 'base-64'
+import base64 from 'base-64';
+import api from './api';
+
 
 import styled from "styled-components/native";
 
@@ -74,6 +76,16 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
 
+  buttonContainer4: {
+    width: 300,
+    backgroundColor: "#34b5ba",
+    padding: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderRadius: 65,
+    borderColor: "#34b5ba",
+    marginTop:10,
+  },
   buttonContainer: {
     width: 300,
     backgroundColor: "#34b5ba",
@@ -90,6 +102,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#34b5ba"
+  },
+  buttonContainer3: {
+    width: 300,
+    padding: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#34b5ba",
+    marginTop:10,
+
   },
   buttonContainer2: {
     width: 200,
@@ -326,6 +347,9 @@ export default class PrivateProfile extends Component {
     console.log("entramos en getUser")
     Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser").then(
       res => {
+
+        const buys = res.data.buys;
+        const sells = res.data.sells;
         const username = res.data.username;
         const description = res.data.descripcion;
         const email = res.data.email;
@@ -339,7 +363,9 @@ export default class PrivateProfile extends Component {
           description: description,
           phone: phone,
           email: email,
-          imgProfile: imgProfile
+          imgProfile: imgProfile,
+          buys:buys,
+          sells:sells
         });
       }
     ) .catch(err => this.setState({ ...this.state, error: "Error" }));
@@ -482,6 +508,31 @@ export default class PrivateProfile extends Component {
     console.log(this.state.imgProfile)
     // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
   };
+  _onSave2 = async () => {
+
+    const uri = await Expo.takeSnapshotAsync(this.imageView, {});
+    await api.addPicture(uri)
+
+    // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
+  };
+
+
+  
+  handleSubmit(e) {
+    e.preventDefault()
+    // Reuse of the method "addPicture" from the file '../api'
+    debugger
+    api.addPicture(this.state.file).then(photoData => {
+      debugger
+      let newPhotos = [...this.state.photos]
+      newPhotos.push(photoData)
+
+      this.setState({
+        ...this.state,
+        photos: newPhotos
+      })
+    })
+  }
 
   componentDidMount() {
     console.log(this.state.imgProfile)
@@ -540,22 +591,23 @@ export default class PrivateProfile extends Component {
               <Text>Chat</Text>
             </View>
             <Categorias openProduct={x => this.openProduct(x)} />
-            <Text>Products</Text>
+                    <View style={{flex:1}}>
 
             <Touchable
               onPress={() =>
                 this.setState({ ...this.state, vista: "crearproducto" })
               }
             >
-              <View>
-                <Text>Ir a crear producto</Text>
+              <View style={styles.buttonContainer3}>
+                <Text style={styles.buttonText2}>Ir a crear producto</Text>
               </View>
             </Touchable>
             <Touchable onPress={this.props.press}>
-              <View style={styles.buttonContainer}>
-                <Text style={styles.buttonText}>logout</Text>
+              <View style={styles.buttonContainer4}>
+                <Text style={styles.newButtonText}>logout</Text>
               </View>
             </Touchable>
+                    </View>
           </Container>
         </ScrollView>
       );
@@ -641,8 +693,8 @@ export default class PrivateProfile extends Component {
                 <Text style={styles.buttonText}>Take</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.button} onPress={this._onSave}>
-                <Text style={styles.buttonText}>Save</Text>
+              <TouchableOpacity style={styles.button} onPress={this._onSave2}>
+                <Text style={styles.buttonText}>Save{this.state.imgProfile}</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -3,10 +3,8 @@ const Schema = mongoose.Schema;
 
 const pictureSchema = new Schema(
   {
-    path: String,
-    name: String,
-    source: String,
-    destination: String
+    imgName: String
+
   },
   {
     timestamps: {
