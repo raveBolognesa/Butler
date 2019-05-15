@@ -123,13 +123,13 @@ const styles = StyleSheet.create({
       marginBottom: 5
     },
     itemDescription: {
-      width: 250
+      width: 230
     },
     imagenItem: {
-      width: 75,
-      height: 75,
+      width: 76,
+      height: 76,
       borderWidth: 1,
-      borderRadius: 50,
+      borderRadius: 38,
       borderColor: "#34b5ba",
       marginRight: 20
     },
@@ -142,13 +142,18 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: "row",
       justifyContent: "space-between",
-      width: 200
+      width: 200,
+      alignItems:"center",
+      marginBottom:5
     },
     itemPrice: {
       marginLeft: 20,
       color: "#969696",
       fontSize: 15,
       fontWeight: "bold"
+    },
+    partederechaItem:{
+      width:200
     }
   });
 
@@ -257,11 +262,11 @@ export default class Categorias extends Component {
                           <View style={styles.titleItem}>
                             <View style={styles.item}>
                               <Image
-                                source={require("../assets/images/icon.png")}
-                                style={styles.imagenItem}
+                  source={{ uri: item.imgProduct }}
+                  style={styles.imagenItem}
                               />
                             </View>
-                            <View style={styles.item}>
+                            <View style={styles.partederechaItem}>
                               <View style={styles.itemHeader}>
                                 <Text style={styles.itemTitle}>
                                   {item.title}
@@ -272,8 +277,9 @@ export default class Categorias extends Component {
                               <Text style={styles.itemDescription} numberOfLines={3}>
                                 {item.description}
                               </Text>
-                              <TouchableOpacity onPress={() => this.borrar(item._id)}>
-                          <Text>borrar</Text>
+                              <TouchableOpacity onPress={() => this.borrar(item._id)}
+                              >
+                          <Text style={{color: "red", padding:3,marginTop:5}}>Delete product</Text>
                         </TouchableOpacity>
                             </View>
                           </View>
@@ -329,8 +335,8 @@ export default class Categorias extends Component {
                           <View style={styles.titleItem}>
                             <View style={styles.item}>
                               <Image
-                                source={require("../assets/images/icon.png")}
-                                style={styles.imagenItem}
+                  source={{ uri: item.imgProduct }}
+                  style={styles.imagenItem}
                               />
                             </View>
                             <View style={styles.item}>
@@ -344,9 +350,7 @@ export default class Categorias extends Component {
                               <Text style={styles.itemDescription} numberOfLines={3}>
                                 {item.description}
                               </Text>
-                              <TouchableOpacity onPress={() => this.borrar(item._id)}>
-                          <Text>borrar</Text>
-                        </TouchableOpacity>
+                              <Text style={{color: "green", padding:3,marginTop:5}}>I´ve purchased this product</Text>
                             </View>
                           </View>
                         </TouchableOpacity>
@@ -401,8 +405,8 @@ export default class Categorias extends Component {
                           <View style={styles.titleItem}>
                             <View style={styles.item}>
                               <Image
-                                source={require("../assets/images/icon.png")}
-                                style={styles.imagenItem}
+                  source={{ uri: item.imgProduct }}
+                  style={styles.imagenItem}
                               />
                             </View>
                             <View style={styles.item}>
@@ -416,9 +420,7 @@ export default class Categorias extends Component {
                               <Text style={styles.itemDescription} numberOfLines={3}>
                                 {item.description}
                               </Text>
-                              <TouchableOpacity onPress={() => this.borrar(item._id)}>
-                          <Text>borrar</Text>
-                        </TouchableOpacity>
+                              <Text style={{color: "green", padding:3,marginTop:5}}>I´ve sold this product</Text>
                             </View>
                           </View>
                         </TouchableOpacity>

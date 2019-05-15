@@ -99,7 +99,7 @@ export default class SplashPage extends Component {
   componentWillMount() {
     setTimeout(() => {
       this.setState({ timePassed: true });
-    }, 3000);
+    }, 0);
   }
 
   componentWillUnmount() {
@@ -124,7 +124,7 @@ export default class SplashPage extends Component {
         <ScrollView>
           <Container>
             <TouchableOpacity
-              /* onPress={() => this.props.navigation.navigate("Main")} */
+              onPress={() => this.props.navigation.navigate("Main")} 
             >
               <Image
                 style={{
