@@ -501,9 +501,9 @@ export default class PrivateProfile extends Component {
   _onSave = async () => {
     const uri = await Expo.takeSnapshotAsync(this.imageView, {});
     await CameraRoll.saveToCameraRoll(uri);
-    var bytes = utf8.encode(uri);
-    var encoded =base64.encode(bytes);
-    this.setState({ ...this.state, imgProfile: encoded})
+    // var bytes = utf8.encode(uri);
+    // var encoded =base64.encode(bytes);
+    this.setState({ ...this.state, imgProfile: uri})
 
     console.log(this.state.imgProfile)
     // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
@@ -554,7 +554,7 @@ export default class PrivateProfile extends Component {
               <View>
                 <Image
                   style={styles.imagenPerfil}
-                  source={{ uri: decoder(this.state.imgProfile) }}
+                  source={{ uri: this.state.imgProfile }}
                 />
               </View>
               <View style={styles.cabeceraDerecha}>

@@ -45,7 +45,8 @@ export default class HomeScreen extends React.Component {
   }
 
   comprarProducto(){
-    Axios.post(`https://butler-back.herokuapp.com/api/products/${this.state.prodId}/comprar`);
+    Axios.post(`https://butler-back.herokuapp.com/api/products/${this.state.prodId}/comprar`)
+    
 
   }
 
@@ -134,7 +135,7 @@ export default class HomeScreen extends React.Component {
                 </View>
                 <View>
                   <TouchableOpacity style={styles.botonCabron}
-                  onPress={()=> this.comprarProducto()}
+                  onPress={()=> {this.comprarProducto(); this.setState({ ...this.state, product: undefined });navigate("Settings"); }}
                   >
                     <Text style={styles.buttonX}>BUY</Text>
                   </TouchableOpacity>
