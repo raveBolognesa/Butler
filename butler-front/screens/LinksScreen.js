@@ -451,7 +451,7 @@ handleKeyDown=(e)=> {
                       <View style={styles.titleItem}>
                         <View style={styles.item}>
                           <Image
-                            source={{ uri: item.imgChat}}
+                            source={{ uri: `data:image/png;base64,${item.imgChat}`}}
                             style={styles.imagenItem}
                           />
                         </View>

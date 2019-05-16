@@ -165,7 +165,7 @@ export default class Signup extends Component {
               <View style={styles.titleItem}>
                   <View style={styles.item}>
                     <Image
-                  source={{ uri: item.imgProduct }}
+                  source={{ uri: `data:image/png;base64,${item.imgProduct}` }}
                   style={styles.imagenItem}
                     />
                   </View>

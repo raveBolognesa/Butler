@@ -107,7 +107,7 @@ export default class HomeScreen extends React.Component {
   crearUnChat(x,y){
     const { navigate } = this.props.navigation;
 
-    Axios.post("https://butler-back.herokuapp.com/sock/newRoom",{message:[] , speaker: x, product: y})
+    Axios.post("https://butler-back.herokuapp.com/sock/newRoom",{message:[] , speaker: x, product: y,imgChat:this.state.img})
       .then(res=> Promise.resolve(res.data.chatData._id))
       .then(id => navigate("Links", { speaker: this.state.author,id:id }) )
   }
@@ -150,7 +150,7 @@ export default class HomeScreen extends React.Component {
               <View>
                 <Image
                   style={styles.imagenItem1}
-                  source={{ uri: this.state.imgProduct }}
+                  source={{ uri: `data:image/png;base64,${this.state.img}` }}
                 />
               </View>
 
@@ -196,7 +196,7 @@ export default class HomeScreen extends React.Component {
                 <View style={styles.titleItem}>
                   <View style={styles.item}>
                     <Image
-                  source={{ uri: this.state.authorImg }}
+                  source={{ uri: `data:image/png;base64,${this.state.authorImg}`  }}
                   style={styles.imagenItem}
                     />
                   </View>

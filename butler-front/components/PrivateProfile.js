@@ -429,7 +429,8 @@ export default class PrivateProfile extends Component {
       phone: "",
       buys:"buys",
           sells:"sells",
-      imgProduct: ""
+      imgProduct: "",
+      cuantosprods: 0
     };
   }
 
@@ -441,8 +442,22 @@ export default class PrivateProfile extends Component {
     };
     call(args).catch(console.error);
   };
+  traerProductos() {
+    Axios.get("https://butler-back.herokuapp.com/api/products/misproductos").then(
+      res => {
+        const producto = res.data;
+        this.setState({
+          ...this.state,
+          misproductos: producto,
+          cuantosprods: producto.length
+        });
+      }
+    ).catch(error=> console.log(error));
+    
+  }
 
   getUser() {
+    this.traerProductos();
     console.log("entramos en getUser");
     Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser")
       .then(res => {
@@ -478,7 +493,8 @@ export default class PrivateProfile extends Component {
       description: this.state.description,
       title: this.state.title,
       localization: this.state.localization,
-      date: this.state.date
+      date: this.state.date,
+      imgProduct: this.state.base
     })
       .then(res =>
         this.setState({
@@ -594,6 +610,19 @@ export default class PrivateProfile extends Component {
       this.setState({...this.state,base: result.base64,imgProfile:result.base64 });
     }
   };
+  _pickImage2 = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      base64:true,
+      aspect: [1, 1],
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({...this.state,base: result.base64 });
+    }
+  };
 
   _onChoosePic = async () => {
     const { cancelled, uri } = await Expo.ImagePicker.launchImageLibraryAsync();
@@ -660,6 +689,8 @@ export default class PrivateProfile extends Component {
 
   componentDidMount() {
     console.log(this.state.imgProfile);
+    this.traerProductos();
+
     this.getUser();
   }
   render() {
@@ -669,8 +700,9 @@ export default class PrivateProfile extends Component {
       latitudeDelta: 0.09,
       longitudeDelta: 0.04
     };
+    
     let busca =(x)=> x.length - 1;
-
+    let busca2 =(x)=> x.length === undefined ? 0 : x.length;
     let decoder = (x)=> base64.decode(x);
     if (this.state.vista === "perfilprivado") {
       return (
@@ -685,9 +717,9 @@ export default class PrivateProfile extends Component {
               </View>
               <View style={styles.cabeceraDerecha}>
                 <View style={styles.cabeceraStadisticas}>
-                  <Text styles={styles.item}>{busca(this.state.sells)}</Text>
-                  <Text styles={styles.item}>{busca(this.state.buys)}</Text>
-                  <Text styles={styles.item}>{busca(this.state.sells)}</Text>
+                  <Text styles={styles.item}>{busca2(this.state.sells)}</Text>
+                  <Text styles={styles.item}>{busca2(this.state.buys)}</Text>
+                  <Text styles={styles.item}>{this.state.cuantosprods}</Text>
                 </View>
                 <View style={styles.cabeceraStadisticas}>
                   <Text styles={styles.item}>Sells</Text>
@@ -850,13 +882,13 @@ export default class PrivateProfile extends Component {
                   <Image
                     ref={ref => (this.imageView = ref)}
                     style={styles.imagenProfEditor}
-                    source={{ uri: this.state.imgProduct }}
+                    source={{ uri: `data:image/png;base64,${this.state.base}` }}
                   />
                 </View>
                 <View style={styles.groupButtonProfEditor}>
                   <TouchableOpacity
                     style={styles.buttonProfEditor}
-                    onPress={this._pickImage}
+                    onPress={this._pickImage2}
                   >
                     <Text style={styles.textPhotoEditor}>Gallery</Text>
                   </TouchableOpacity>
@@ -922,7 +954,7 @@ export default class PrivateProfile extends Component {
                   style={styles.buttonEditProfEditor}
                   onPress={() => this.crearProducto()}
                 >
-                  <Text style={styles.textProfEditor} onPress={this._onSaveProduct}>
+                  <Text style={styles.textProfEditor} >
                     Crear
                   </Text>
                 </TouchableOpacity>
@@ -1044,7 +1076,7 @@ export default class PrivateProfile extends Component {
 
                               <Image
                                 style={styles.imagenItem1}
-                                source={{ uri: this.state.imgProduct }}
+                                source={{ uri:  `data:image/png;base64,${this.state.imgProduct}` }}
                                 />
                           
                         </View>
