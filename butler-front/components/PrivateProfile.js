@@ -627,22 +627,17 @@ export default class PrivateProfile extends Component {
     let { status } = await Permissions.getAsync(Permissions.CALENDAR, Permissions.CONTACTS, Permissions.CAMERA)
     if (status !== "granted") {
       console.log("no pasas")
+    }else{
+      console.log("************   pasas   **********")
+
     }
   }
+  async componentDidMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
+    console.log("hola")
+    this.setState({ hasCameraPermission: status === 'granted' });
+  }
   _pickCam= async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      base64:true,
-      aspect: [1, 1],
-    });
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      this.setState({...this.state,base: result.base64 });
-    }
-  };
-  _pickCam2= async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       base64:true,
@@ -655,69 +650,21 @@ export default class PrivateProfile extends Component {
       this.setState({...this.state,base: result.base64,imgProfile:result.base64 });
     }
   };
-
-  _onChoosePic = async () => {
-    const { cancelled, uri } = await Expo.ImagePicker.launchImageLibraryAsync();
-    if (!cancelled) {
-      this.setState({ imgProfile: uri });
-      // console.log(uri) // this logs correctly
-      // TODO: why isn't this showing up inside the Image on screen?
-    }
-  };
-
-  // When "Take" is pressed, we show the user's camera so they
-  // can take a photo to show inside the image view on screen.
-  _onTakePic = async () => {
-    const { cancelled, uri } = await Expo.ImagePicker.launchCameraAsync({});
-    if (!cancelled) {
-      this.setState({ imgProfile: uri });
-    }
-  };
-
-  // When "Save" is pressed, we snapshot whatever is shown inside
-  // of "this.imageView" and save it to the device's camera roll.
-  _onSave = async () => {
-    const uri = await Expo.takeSnapshotAsync(this.imageView, {});
-    await CameraRoll.saveToCameraRoll(uri);
-    // var bytes = utf8.encode(uri);
-    // var encoded =base64.encode(bytes);
-    this.setState({ ...this.state, imgProfile: uri });
-
-    console.log(this.state.imgProfile);
-    // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
-  };
-  _onSaveProduct = async () => {
-    const uri = await Expo.takeSnapshotAsync(this.imageView, {});
-    await CameraRoll.saveToCameraRoll(uri);
-    // var bytes = utf8.encode(uri);
-    // var encoded =base64.encode(bytes);
-    this.setState({ ...this.state, imgProduct: uri})
-
-    console.log(this.state.imgProduct)
-    // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
-  };
-  _onSave2 = async () => {
-    const uri = await Expo.takeSnapshotAsync(this.imageView, {});
-    await api.addPicture(uri);
-
-    // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
-  };
-
-  handleSubmit(e) {
-    e.preventDefault();
-    // Reuse of the method "addPicture" from the file '../api'
-    debugger;
-    api.addPicture(this.state.file).then(photoData => {
-      debugger;
-      let newPhotos = [...this.state.photos];
-      newPhotos.push(photoData);
-
-      this.setState({
-        ...this.state,
-        photos: newPhotos
-      });
+  _pickCam2= async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      base64:true,
+      aspect: [1, 1],
     });
-  }
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({...this.state,base: result.base64 });
+    }
+  };
+
+
 
   componentDidMount() {
     console.log(this.state.imgProfile);
@@ -829,7 +776,7 @@ export default class PrivateProfile extends Component {
 
                   <TouchableOpacity
                     style={styles.buttonProfEditor}
-                    onPress={this._pickCam2}
+                    onPress={this._pickCam}
                   >
                     <Text style={styles.textPhotoEditor}>Camera</Text>
                   </TouchableOpacity>
@@ -927,7 +874,6 @@ export default class PrivateProfile extends Component {
 
                   <TouchableOpacity
                     style={styles.buttonProfEditor}
-                    onPress={this._pickCam}
                   >
                     <Text style={styles.textPhotoEditor}>Camera</Text>
                   </TouchableOpacity>

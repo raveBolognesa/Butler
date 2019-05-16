@@ -57,14 +57,16 @@ export default class HomeScreen extends React.Component {
 
   }
   _checkMultiPermissions = async ()=> {
-    let { status } = await Permissions.getAsync(Permissions.CALENDAR, Permissions.CONTACTS, Permissions.CAMERA)
+    let { status } = await Permissions.getAsync(Permissions.CALENDAR, Permissions.CONTACTS, Permissions.CAMERA);
     if (status !== "granted") {
+    }else{
+
       console.log("no pasas")
     }
   }
 
   _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    let { status } = await Permissions.askAsync(Permissions.LOCATION,Permissions.CAMERA, Permissions.CAMERA_ROLL);
     if (status !== "granted") {
       this.setState({
         locationResult: "Permission to access location was denied",
@@ -76,6 +78,15 @@ export default class HomeScreen extends React.Component {
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ locationResult: JSON.stringify(location), location });
   };
+  // _getCamAsync = async () => {
+  //   let { status } = await Permissions.askAsync(Permissions.CAMERA);
+  //   if (status !== "granted") {
+  //     this.setState({
+  //       camResult: "Permission to access Camera was denied",
+        
+  //     });
+  //   }
+  // };
 
   call (x)  {
     //handler to make a call
@@ -122,6 +133,7 @@ export default class HomeScreen extends React.Component {
   componentDidMount() {
     this._getLocationAsync();
     this._checkMultiPermissions();
+    // this._getCamAsync();
   }
 
   render() {

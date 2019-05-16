@@ -7,8 +7,10 @@ import {
   ScrollView,
   StyleSheet,
   SectionList,
-  Image
+  Image,Button
 } from "react-native";
+import { ImagePicker, Permissions, Constants } from 'expo';
+
 import Chats from "../components/Chats";
 import Chat from "../components/Chat";
 import Axios from "axios";
@@ -16,6 +18,7 @@ import io from 'socket.io-client';
 
 import styled from "styled-components/native";
 import ImagePickerExample from "../components/ImagePickerExample";
+import CameraExample from "../components/CameraExample";
 
 export default class LinksScreen extends React.Component {
   constructor(props) {
@@ -233,6 +236,23 @@ handleKeyDown=(e)=> {
   }
 }
 
+askPermissionsAsync = async () => {
+  await Permissions.askAsync(Permissions.CAMERA);
+  await Permissions.askAsync(Permissions.CAMERA_ROLL);
+  // you would probably do something to verify that permissions
+  // are actually granted, but I'm skipping that for brevity
+};
+
+useCameraHandler = async () => {
+  await this.askPermissionsAsync();
+  let result = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+    aspect: [4, 3],
+    base64: true,
+  });
+  this.setState({...this.state, result });
+};
+
   render() {
 
     
@@ -434,6 +454,10 @@ handleKeyDown=(e)=> {
         <View style={styles.container3}>
           <View style={styles.containerProducts3}>
             <Text style={styles.productsTitle3}>Chats</Text>
+            {/* <Button title="launchCameraAsync" onPress={this.useCameraHandler} />
+            <Text style={styles.paragraph}>
+          {JSON.stringify(this.state.result)}
+        </Text> */}
             <View style={styles.viewProducts}>
               <ScrollView>
                 <SectionList

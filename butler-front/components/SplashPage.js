@@ -75,7 +75,8 @@ export default class SplashPage extends Component {
       timePassed: false,
       password: undefined,
       username: undefined,
-      error: undefined
+      error: undefined,
+      logeado: "noestoy"
     };
   }
 
@@ -138,10 +139,6 @@ export default class SplashPage extends Component {
         </Container2>
       );
     } else {
-      if(this.state.estoy){
-        
-        this.props.navigation.navigate("Main")
-      }
       return (
         <ScrollView>
           <Container>
