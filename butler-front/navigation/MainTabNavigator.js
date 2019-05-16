@@ -13,7 +13,7 @@ const HomeStack = createStackNavigator({
 
 HomeStack.navigationOptions = {
   tabBarLabel: ({ focused }) => (
-    <Text style={focused ? {color:"#34b5ba"} :{color:"#ccc"}}>Home</Text>
+    <Text style={focused ? {color:"#34b5ba",textAlign:"center"} :{color:"#ccc",textAlign:"center"}}>Home</Text>
   ),
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -33,7 +33,7 @@ const LinksStack = createStackNavigator({
 
 LinksStack.navigationOptions = {
   tabBarLabel: ({ focused }) => (
-    <Text style={focused ? {color:"#34b5ba"} :{color:"#ccc"}}>Chats</Text>
+    <Text style={focused ? {color:"#34b5ba",textAlign:"center"} :{color:"#ccc",textAlign:"center"}}>Chats</Text>
   ),
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -49,7 +49,7 @@ const SettingsStack = createStackNavigator({
 
 SettingsStack.navigationOptions = {
   tabBarLabel: ({ focused }) => (
-    <Text style={focused ? {color:"#34b5ba"} :{color:"#ccc"}}>Profile</Text>
+    <Text style={focused ? {color:"#34b5ba",textAlign:"center"} :{color:"#ccc",textAlign:"center"}}>Profile</Text>
   ),
   tabBarIcon: ({ focused }) => (
     <TabBarIcon

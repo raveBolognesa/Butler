@@ -50,7 +50,9 @@ export default class HomeScreen extends React.Component {
   }
 
   comprarProducto(){
-    Axios.post(`https://butler-back.herokuapp.com/api/products/${this.state.prodId}/comprar`)
+    Axios.post(`https://butler-back.herokuapp.com/api/products/${this.state.prodId}/comprar`);
+    WebBrowser.openBrowserAsync(`https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=${this.state.authorMail}&lc=US&item_name=Donation+to+Fashion+Foundation+For+Our+Future+(idg4973)&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted`)
+    
     
 
   }
@@ -88,6 +90,7 @@ export default class HomeScreen extends React.Component {
         prodId: res.data.product._id,
         title: res.data.product.title,
         author: res.data.product.author.username,
+        authorMail: res.data.product.author.email,
         authorImg: res.data.product.author.imgProfile,
         img: res.data.product.imgProduct,
         phone: res.data.product.author.phone,
@@ -143,16 +146,19 @@ export default class HomeScreen extends React.Component {
         <View style={styles.containerOneProduct}>
           <View style={styles.containerProduct}>
             <View style={styles.productHeader}>
+              
               <View>
                 <Image
                   style={styles.imagenItem1}
                   source={{ uri: this.state.imgProduct }}
                 />
               </View>
+
+
               <View style={styles.tituloDerecha}>
-                <View style={styles.barradetitulo}>
-                  <Text style={styles.tituloBlanco}>{this.state.title}</Text>
-                </View>
+                      <View style={styles.barradetitulo}>
+                        <Text style={styles.tituloBlanco}>{this.state.title}</Text>
+                      </View>
                 <View>
                   <Text style={styles.subtituloBlanco}>Price: {this.state.price / 100} €</Text>
                   <Text style={styles.subtituloBlanco}>About dates... {this.state.date}</Text>

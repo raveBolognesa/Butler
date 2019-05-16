@@ -41,7 +41,10 @@ const jamon = StyleSheet.create({
   items: {
     width: 106,
     height: 30,
-    marginBottom: 5
+    marginBottom: 5,
+    color:"white",
+    fontSize:5,
+    fontWeight:"bold"
   },
   producto: {},
   imagenProduto: {
@@ -229,7 +232,7 @@ export default class Categorias extends Component {
                     }
                     }
                   >
-                    <Text>Products</Text>
+                    <Text style={{color:"white",fontSize:14}}>Products</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
@@ -237,14 +240,14 @@ export default class Categorias extends Component {
                     this.traerProductos();
                   this.getUser();}}
                   >
-                    <Text>Buys</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
                     onPress={() => {this.setState({ ...this.state, campo: "Sells" });this.traerProductos();
                   this.getUser();}}
                   >
-                    <Text>Sells</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Sells</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={jamon.fondoblanco}>
@@ -303,21 +306,21 @@ export default class Categorias extends Component {
                     }
                     }
                   >
-                    <Text>Products</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Products</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
                     onPress={() => {this.setState({ ...this.state, campo: "Buys" });    this.traerProductos();    this.traerProductos();    this.traerProductos();this.traerProductos();
                   this.getUser();}}
                   >
-                    <Text>Buys</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
                     onPress={() => {this.setState({ ...this.state, campo: "Sells" });this.traerProductos();
                   this.getUser();}}
                   >
-                    <Text>Sells</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Sells</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={jamon.fondoblanco}>
@@ -373,21 +376,21 @@ export default class Categorias extends Component {
                     }
                     }
                   >
-                    <Text>Products</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Products</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
                     onPress={() => {this.setState({ ...this.state, campo: "Buys" });    this.getUser();    this.getUser();    this.getUser();this.traerProductos();
                   this.getUser();}}
                   >
-                    <Text>Buys</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Buys</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={jamon.items}
                     onPress={() => {this.setState({ ...this.state, campo: "Sells" });this.traerProductos();
                   this.getUser();}}
                   >
-                    <Text>Sells</Text>
+                    <Text  style={{color:"white",fontSize:14}}>Sells</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={jamon.fondoblanco}>

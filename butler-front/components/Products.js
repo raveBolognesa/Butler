@@ -100,7 +100,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 38,
     borderColor: "#34b5ba",
-    marginRight: 20
+    marginRight: 20,
+    resizeMode: 'cover',
   },
   itemTitle: {
     color: "#34b5ba",
