@@ -18,6 +18,8 @@ import utf8 from "utf8";
 import base64 from 'base-64';
 import api from './api';
 import call from 'react-native-phone-call';
+import { ImagePicker } from 'expo';
+
 
 
 import styled from "styled-components/native";
@@ -527,14 +529,17 @@ export default class PrivateProfile extends Component {
         description: this.state.description,
         email: this.state.email,
         phone: this.state.phone,
-        imgProfile: this.state.imgProfile
+        imgProfile: this.state.base
       }
     )
-      .then(res =>
+      .then(res =>{
         this.setState({
           ...this.state,
+          
           vista: "perfilprivado"
-        })
+        });
+
+    this.getUser()}
       )
       .catch(err => this.setState({ ...this.state, error: "Error" }));
   }
@@ -575,6 +580,21 @@ export default class PrivateProfile extends Component {
       })
     );
   }
+
+  _pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      base64:true,
+      aspect: [1, 1],
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      this.setState({...this.state,base: result.base64,imgProfile:result.base64 });
+    }
+  };
+
   _onChoosePic = async () => {
     const { cancelled, uri } = await Expo.ImagePicker.launchImageLibraryAsync();
     if (!cancelled) {
@@ -660,7 +680,7 @@ export default class PrivateProfile extends Component {
               <View>
                 <Image
                   style={styles.imagenPerfil}
-                  source={{ uri: this.state.imgProfile }}
+                  source={{ uri: `data:image/png;base64,${this.state.imgProfile}` }}
                 />
               </View>
               <View style={styles.cabeceraDerecha}>
@@ -732,13 +752,13 @@ export default class PrivateProfile extends Component {
                   <Image
                     ref={ref => (this.imageView = ref)}
                     style={styles.imagenProfEditor}
-                    source={{ uri: this.state.imgProfile }}
+                    source={{ uri: `data:image/png;base64,${this.state.imgProfile}` }}
                   />
                 </View>
                 <View style={styles.groupButtonProfEditor}>
                   <TouchableOpacity
                     style={styles.buttonProfEditor}
-                    onPress={this._onChoosePic}
+                    onPress={this._pickImage}
                   >
                     <Text style={styles.textPhotoEditor}>Gallery</Text>
                   </TouchableOpacity>
@@ -796,9 +816,9 @@ export default class PrivateProfile extends Component {
 
                 <TouchableOpacity
                   style={styles.buttonEditProfEditor}
-                  onPress={() => this.editarPerfil()}
+                  onPress={() => {this.editarPerfil()}}
                 >
-                  <Text style={styles.textProfEditor} onPress={this._onSave}>
+                  <Text style={styles.textProfEditor} >
                     Edit
                   </Text>
                 </TouchableOpacity>
@@ -836,7 +856,7 @@ export default class PrivateProfile extends Component {
                 <View style={styles.groupButtonProfEditor}>
                   <TouchableOpacity
                     style={styles.buttonProfEditor}
-                    onPress={this._onChoosePic}
+                    onPress={this._pickImage}
                   >
                     <Text style={styles.textPhotoEditor}>Gallery</Text>
                   </TouchableOpacity>

@@ -19,10 +19,10 @@ import ImagePickerExample from "../components/ImagePickerExample";
 
 export default class LinksScreen extends React.Component {
   constructor(props) {
-    console.log("constructor")
+    // console.log("constructor")
     super(props);
-    console.log(props)
-    console.log("*".repeat(200))
+    // console.log(props)
+    // console.log("*".repeat(200))
     // this.chatArea = ""
     this.state = {
       height: 40,
@@ -57,7 +57,7 @@ export default class LinksScreen extends React.Component {
           .then(
           res => {
             const producto = res.data;
-            console.log("los productos: ",producto[0])
+            // console.log("los productos: ",producto[0])
             this.setState({
               ...this.state,
               products: producto,
@@ -81,7 +81,7 @@ export default class LinksScreen extends React.Component {
           .then(
           res => {
             const producto = res.data;
-            console.log("los productos: ",producto[0])
+            // console.log("los productos: ",producto[0])
             this.setState({
               ...this.state,
               products: producto
@@ -186,7 +186,7 @@ export default class LinksScreen extends React.Component {
   
   componentWillReceiveProps(){
 
-    console.log("componentWillReceiveProps");
+    // console.log("componentWillReceiveProps");
 
     const { navigation } = this.props;
     var itemId = navigation.getParam("id");
@@ -196,9 +196,9 @@ export default class LinksScreen extends React.Component {
       // this.traerProductos(itemId);
       
     }
-    console.log("mi item id",itemId);
-    console.log("mi item estado",this.state.id);
-    console.log("mi item speake",speakerName);
+    // console.log("mi item id",itemId);
+    // console.log("mi item estado",this.state.id);
+    // console.log("mi item speake",speakerName);
     this.traerProductosenMount();
     this.cargarElUltimo();
     this.cargarUnChat3(this.state.id);
@@ -238,9 +238,9 @@ handleKeyDown=(e)=> {
     
     let busca =(x)=> x.length-1;
     const mismensajes = this.state.jamon.message ? this.state.jamon.message : {elmensaje: "escribe",lomando:this.state.soy};
-    console.log("los mensajes del chat", mismensajes);
+    // console.log("los mensajes del chat", mismensajes);
     const datos = this.state.products;
-    console.log("el id de el chat en el que estoy:",this.state.id)
+    // console.log("el id de el chat en el que estoy:",this.state.id)
 
    
 
@@ -251,7 +251,7 @@ handleKeyDown=(e)=> {
       <View style={styles.container3}>
       <View style={styles.containerProducts3}>
       <Text style={styles.productsTitle3}><Text style={{color:"white"}} onPress={() =>
-                        this.setState({ ...this.state, id: ""})
+                        {this.traerProductosenMount();this.setState({ ...this.state, id: ""});}
                       }>x   </Text><Text >{this.state.jamon.title} con {this.state.jamon.owner === this.state.soy ? this.state.jamon.speaker : this.state.jamon.owner }</Text></Text>
         <View style={styles.viewProducts}>
           <ScrollView>
@@ -469,7 +469,7 @@ handleKeyDown=(e)=> {
                             style={styles.itemDescription}
                             numberOfLines={3}
                           >
-                            {item.message[busca(item.message)].elmensaje}
+                            {item.message.length === 0 ? "no hay mensajes" : item.message[busca(item.message)].elmensaje  }
                           </Text>
                           {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
                     <Text>borrar</Text>
