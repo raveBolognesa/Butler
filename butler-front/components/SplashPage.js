@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import styled from "styled-components/native";
 import axios from "axios";
+import Axios from "axios";
+
 
 const Container = styled.View`
   display: flex;
@@ -93,13 +95,29 @@ export default class SplashPage extends Component {
   signup() {
     return this.props.navigation.navigate("Signup");
   }
+  getUser() {
+    console.log("entramos en getUser");
+    Axios.get("https://butler-back.herokuapp.com/api/auth/currentuser")
+      .then(res => {
+        const username = res.data.username;
 
-  componentDidMount() {}
+        this.setState({
+          ...this.state,
+          estoy: username,
+        });
+      })
+      .catch(err => this.setState({ ...this.state, noestoy: "Log or register" }));
+  }
+
+  componentDidMount() {
+  }
 
   componentWillMount() {
-    setTimeout(() => {
-      this.setState({ timePassed: true });
-    }, 0);
+    this.getUser();
+
+      setTimeout(() => {
+        this.setState({ timePassed: true });
+      }, 3000);
   }
 
   componentWillUnmount() {
@@ -116,16 +134,20 @@ export default class SplashPage extends Component {
               height: 700
             }}
             source={require("../assets/images/ezgif.com-video-to-gif.gif")}
-          />
+            />
         </Container2>
       );
     } else {
+      if(this.state.estoy){
+        
+        this.props.navigation.navigate("Main")
+      }
       return (
         <ScrollView>
           <Container>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate("Main")} 
-            >
+              >
               <Image
                 style={{
                   marginTop: 80,
@@ -133,7 +155,8 @@ export default class SplashPage extends Component {
                   height: 400
                 }}
                 source={require("../assets/images/icon.png")}
-              />
+                />
+                {/* <Text style={{color:"#34b5ba",marginTop:10,marginBottom:10}}>{this.state.noestoy}</Text> */}
             </TouchableOpacity>
 
             <TextInput

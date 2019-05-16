@@ -51,10 +51,16 @@ export default class HomeScreen extends React.Component {
 
   comprarProducto(){
     Axios.post(`https://butler-back.herokuapp.com/api/products/${this.state.prodId}/comprar`);
-    WebBrowser.openBrowserAsync(`https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=${this.state.authorMail}&lc=US&item_name=Donation+to+Fashion+Foundation+For+Our+Future+(idg4973)&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted`)
+    WebBrowser.openBrowserAsync(`https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=${this.state.authorMail}&item_name=tests&currency_code=EUR&amount=${this.state.price}.00`)
     
     
 
+  }
+  _checkMultiPermissions = async ()=> {
+    let { status } = await Permissions.getAsync(Permissions.CALENDAR, Permissions.CONTACTS, Permissions.CAMERA)
+    if (status !== "granted") {
+      console.log("no pasas")
+    }
   }
 
   _getLocationAsync = async () => {
@@ -65,6 +71,7 @@ export default class HomeScreen extends React.Component {
         location
       });
     }
+    
 
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ locationResult: JSON.stringify(location), location });
@@ -114,6 +121,7 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this._getLocationAsync();
+    this._checkMultiPermissions();
   }
 
   render() {
