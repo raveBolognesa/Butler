@@ -156,6 +156,7 @@ router.post('/newproduct', (req, res, next) => {
   //   .then( user => res.json({status: 'Created Product', user}))
   //   .catch(e => res.json({message:'./error', e}));
   // });
+  
 
   router.post("/:id/comprar",(req,res,next)=>{
     Product.findOne({_id : req.params.id})
@@ -163,16 +164,15 @@ router.post('/newproduct', (req, res, next) => {
         return        User.updateOne(
           { username: req.user.username },
           { $push: { buys: product } }
-        );
+        ).then(
+          x=>{
+            return           User.updateOne(
+              { username: product.author.username },
+              { $push: { sells: product } }
+            )
+          }
+        )
       })
-      .then(
-        product=>{
-          return           User.updateOne(
-            { username: product.author.username },
-            { $push: { sells: product } }
-          )
-        }
-      )
       .catch(err => {
         res.json({message:'./error'})
       });
