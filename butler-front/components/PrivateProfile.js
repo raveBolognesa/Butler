@@ -418,7 +418,8 @@ export default class PrivateProfile extends Component {
       bottomText: "",
       username: "",
       description: "",
-      phone: ""
+      phone: "",
+      imgProduct: ""
     };
   }
 
@@ -584,6 +585,16 @@ export default class PrivateProfile extends Component {
     this.setState({ ...this.state, imgProfile: uri });
 
     console.log(this.state.imgProfile);
+    // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
+  };
+  _onSaveProduct = async () => {
+    const uri = await Expo.takeSnapshotAsync(this.imageView, {});
+    await CameraRoll.saveToCameraRoll(uri);
+    // var bytes = utf8.encode(uri);
+    // var encoded =base64.encode(bytes);
+    this.setState({ ...this.state, imgProduct: uri})
+
+    console.log(this.state.imgProduct)
     // TODO: show confirmation that it was saved (flash the word saved across bottom of screen?)
   };
   _onSave2 = async () => {
@@ -786,11 +797,40 @@ export default class PrivateProfile extends Component {
       );
     } else if (this.state.vista === "crearproducto") {
       return (
-        <Container>
-          <Text>Vista de crear producto</Text>
-          <View>
+        <ScrollView>
+        <View style={styles.containerPadre}>
+          <View style={styles.containerProfEditor}>
+            <View style={styles.cabeceraProfEditor}>
+              <Text style={styles.textCabeceraProfEditor}>
+                Crear producto
+              </Text>
+            </View>
+            <View style={styles.cuerpoProfEditor}>
+                <View style={styles.imageBody}>
+                  <Image
+                    ref={ref => (this.imageView = ref)}
+                    style={styles.imagenProfEditor}
+                    source={{ uri: this.state.imgProduct }}
+                  />
+                </View>
+                <View style={styles.groupButtonProfEditor}>
+                  <TouchableOpacity
+                    style={styles.buttonProfEditor}
+                    onPress={this._onChoosePic}
+                  >
+                    <Text style={styles.textPhotoEditor}>Gallery</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.buttonProfEditor}
+                    onPress={this._onTakePic}
+                  >
+                    <Text style={styles.textPhotoEditor}>Camera</Text>
+                  </TouchableOpacity>
+                </View>
+            <View style={styles.groupInputProfEditor}>
             <TextInput
-              style={styles.input}
+              style={styles.inputProfEditor}
               autoCapitalize="none"
               onChangeText={text => this.setState({ price: text })}
               autoCorrect={false}
@@ -801,14 +841,14 @@ export default class PrivateProfile extends Component {
             />
 
             <TextInput
-              style={styles.input}
+              style={styles.inputProfEditor}
               onChangeText={text => this.setState({ description: text })}
               returnKeyType="next"
               placeholder="Description"
               placeholderTextColor="rgba(225,225,225,0.9)"
             />
             <TextInput
-              style={styles.input}
+              style={styles.inputProfEditor}
               autoCapitalize="none"
               onChangeText={text => this.setState({ title: text })}
               autoCorrect={false}
@@ -818,7 +858,7 @@ export default class PrivateProfile extends Component {
               placeholderTextColor="rgba(225,225,225,0.9)"
             />
             <TextInput
-              style={styles.input}
+              style={styles.inputProfEditor}
               autoCapitalize="none"
               onChangeText={text => this.setState({ localization: text })}
               autoCorrect={false}
@@ -828,7 +868,7 @@ export default class PrivateProfile extends Component {
               placeholderTextColor="rgba(225,225,225,0.9)"
             />
             <TextInput
-              style={styles.input}
+              style={styles.inputProfEditor}
               autoCapitalize="none"
               onChangeText={text => this.setState({ date: text })}
               autoCorrect={false}
@@ -838,19 +878,29 @@ export default class PrivateProfile extends Component {
               placeholderTextColor="rgba(225,225,225,0.9)"
             />
           </View>
+            <TouchableOpacity
+                  style={styles.buttonEditProfEditor}
+                  onPress={() => this.crearProducto()}
+                >
+                  <Text style={styles.textProfEditor} onPress={this._onSaveProduct}>
+                    Crear
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.newButtonContainer2}
+                  onPress={() =>
+                    this.setState({ ...this.state, vista: "perfilprivado" })
+                  }
+                >
+                  <Text style={styles.newButtonText2}>BACK</Text>
+                </TouchableOpacity>
+            </View>
 
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => this.crearProducto()}
-          >
-            <Text style={styles.buttonText}>
-              Mandar formulario e ir a perfil privado
-            </Text>
-          </TouchableOpacity>
-          <Touchable
-            onPress={() => this.setState({ ...this.state, vista: "editar" })}
-          />
-        </Container>
+         
+         
+        </View>
+        </View>
+        </ScrollView>
       );
     } else if (this.state.vista === "editar") {
       return (
