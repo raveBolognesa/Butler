@@ -15,6 +15,7 @@ import Axios from "axios";
 import io from 'socket.io-client';
 
 import styled from "styled-components/native";
+import ImagePickerExample from "../components/ImagePickerExample";
 
 export default class LinksScreen extends React.Component {
   constructor(props) {
@@ -144,12 +145,13 @@ export default class LinksScreen extends React.Component {
     Axios.post(`https://butler-back.herokuapp.com/sock/chat/${x}/addmesage`,{newmesage:{elmensaje:this.state.mensaje,lomando: this.state.soy}})
     .then(res=>{
       const producto = res.data;
+      this.setState({
+        ...this.state,
+        jamon: producto,
+        mensaje:"",
+        id: x});
       this.socket.emit("messageSent", mensaje=>{
 
-        this.setState({
-          ...this.state,
-          jamon: producto,
-          id: x});
 
       });
 
@@ -225,10 +227,16 @@ export default class LinksScreen extends React.Component {
       }), ()=>{this.cargarUnChat3(id)})
   }
 
+handleKeyDown=(e)=> {
+  if(e.nativeEvent.key == "Enter"){
+    this.mandarUnMensaje(this.state.id);console.log("hit")
+  }
+}
+
   render() {
 
     
-    
+    let busca =(x)=> x.length-1;
     const mismensajes = this.state.jamon.message ? this.state.jamon.message : {elmensaje: "escribe",lomando:this.state.soy};
     console.log("los mensajes del chat", mismensajes);
     const datos = this.state.products;
@@ -239,6 +247,75 @@ export default class LinksScreen extends React.Component {
     if (this.state.id) {
       
      this.cargarUnChat2(this.state.id);
+     return(
+      <View style={styles.container3}>
+      <View style={styles.containerProducts3}>
+      <Text style={styles.productsTitle3}><Text style={{color:"white"}} onPress={() =>
+                        this.setState({ ...this.state, id: ""})
+                      }>x   </Text><Text >{this.state.jamon.title} con {this.state.jamon.owner === this.state.soy ? this.state.jamon.speaker : this.state.jamon.owner }</Text></Text>
+        <View style={styles.viewProducts}>
+          <ScrollView>
+          <SectionList
+                  sections={[
+                    {
+                      data: mismensajes
+                    }
+                  ]}
+                  renderItem={({ item }) => {
+                    var x = item.lomando;
+                    if(x === this.state.soy){
+                      return(
+                        <Text style={styles.mensajesDerecha}>{item.elmensaje}</Text>
+                        )
+                        
+                      }else{
+                        return(
+                          <Text style={styles.mensajesIzquierda}>{item.elmensaje}</Text>
+
+                      )
+                    }
+                    }}
+                  keyExtractor={(item, index) => index}
+                />
+            </ScrollView>
+
+            </View>
+            <View style={{
+
+              }}>
+                
+
+<TextInput
+    style={{
+      backgroundColor: "white",
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: "#34b5ba",
+      padding: 10,
+      color: "black",
+    }}
+    multiline={true}
+    value={this.state.mensaje}
+    autoCapitalize="sentences"
+    autoCorrect={true}
+    onChangeText={text => {
+      this.changeHeight(text);
+    }}
+    keyboardType="default"
+    returnKeyType="done"
+    onKeyPress={e=>{this.handleKeyDown(e)}}
+    placeholder="Enter text here..."
+/>
+
+                
+                
+                  {/* <Text style={styles.productsTitle3} onPress={()=>this.mandarUnMensaje(this.state.id)}>Send</Text> */}
+              </View>
+
+        </View>
+        </View>
+
+     );
 
       return (
                       <ScrollView style={{ flex:1}}>
@@ -253,7 +330,7 @@ export default class LinksScreen extends React.Component {
               borderRadius: 20,
                     borderWidth: 1,
                     borderColor: "#34b5ba",
-
+                    height:680
             }}
           >
               <View>
@@ -276,7 +353,8 @@ export default class LinksScreen extends React.Component {
             <View style={styles.padre}>
                       <View style={{ backgroundColor: "white",padding:5 ,borderRadius: 20,
                     borderWidth: 1,
-                    height:550,
+                    height:570,
+                    marginTop:20,
                     borderColor: "#34b5ba",}}>
 
               <ScrollView style={{ flex:1}}>
@@ -312,7 +390,6 @@ export default class LinksScreen extends React.Component {
                 flex: 1,
                 justifyContent: "space-between",
                 flexDirection: "row",
-                marginTop: 20,
 
               }}>
                 <TextInput
@@ -392,7 +469,7 @@ export default class LinksScreen extends React.Component {
                             style={styles.itemDescription}
                             numberOfLines={3}
                           >
-                            {item.message[1].elmensaje}
+                            {item.message[busca(item.message)].elmensaje}
                           </Text>
                           {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
                     <Text>borrar</Text>
@@ -406,6 +483,7 @@ export default class LinksScreen extends React.Component {
               </ScrollView>
             </View>
           </View>
+          {/* <ImagePickerExample/> */}
         </View>
       );
     }
@@ -459,8 +537,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 10,
-    marginTop: 20,
-    marginBottom: 80
+    marginTop: 30,
+    
   },
   superpadre: {
     padding: 10,
@@ -469,16 +547,20 @@ const styles = StyleSheet.create({
   },
   padre: {},
   containerProducts3: {
+    
+    flex: 1,
     backgroundColor: "#34b5ba",
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#34b5ba"
   },
   productsTitle3: {
+    
     color: "whitesmoke",
     fontSize: 20,
     marginLeft: 10,
     marginTop: 10,
+    marginBottom: 10,
     fontWeight: "bold"
   },
   mensajes: {
@@ -580,8 +662,7 @@ const styles = StyleSheet.create({
   },
   viewProducts: {
     
-    marginTop: 5,
-    paddingVertical: 10,
+    flex: 1,
     padding: 10,
     borderRadius: 20,
     borderWidth: 1,

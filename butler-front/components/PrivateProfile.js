@@ -15,8 +15,10 @@ import Touchable from "react-native-platform-touchable";
 import Axios from "axios";
 import Categorias from "../components/Categorias";
 import utf8 from "utf8";
-import base64 from "base-64";
-import api from "./api";
+import base64 from 'base-64';
+import api from './api';
+import call from 'react-native-phone-call';
+
 
 import styled from "styled-components/native";
 
@@ -139,7 +141,10 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   descripcion: {
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 10,
+    color:"gray",
+    fontWeight:"bold",
   },
   productoAuthor: {
     marginTop: 20
@@ -206,13 +211,14 @@ const styles = StyleSheet.create({
     height: 350
   },
   productHeader: {
-    flex: 1,
-    flexDirection: "row",
+    backgroundColor: "#34b5ba",
     borderWidth: 1,
     borderRadius: 20,
     borderColor: "#34b5ba",
-    padding: 10,
-    marginBottom: 5
+    height: 250,
+    color: "whitesmoke",
+    fontSize: 20,
+    fontWeight: "800"
   },
   fondoblanco: {
     backgroundColor: "whitesmoke",
@@ -419,9 +425,20 @@ export default class PrivateProfile extends Component {
       username: "",
       description: "",
       phone: "",
+      buys:"buys",
+          sells:"sells",
       imgProduct: ""
     };
   }
+
+  call (x)  {
+    //handler to make a call
+    let args = {
+      number: x,
+      prompt: false,
+    };
+    call(args).catch(console.error);
+  };
 
   getUser() {
     console.log("entramos en getUser");
@@ -430,7 +447,7 @@ export default class PrivateProfile extends Component {
         const buys = res.data.buys;
         const sells = res.data.sells;
         const username = res.data.username;
-        const description = res.data.descripcion;
+        const description = res.data.description;
         const email = res.data.email;
         const phone = res.data.phone;
         const imgProfile = res.data.imgProfile;
@@ -552,6 +569,7 @@ export default class PrivateProfile extends Component {
         description: res.data.product.description,
         price: res.data.product.price,
         localization: res.data.product.localization,
+        imgProduct: res.data.product.imgProduct,
         date: res.data.product.date,
         createAt: res.data.product.created_at
       })
@@ -631,11 +649,13 @@ export default class PrivateProfile extends Component {
       latitudeDelta: 0.09,
       longitudeDelta: 0.04
     };
-    let decoder = x => base64.decode(x);
+    let busca =(x)=> x.length - 1;
+
+    let decoder = (x)=> base64.decode(x);
     if (this.state.vista === "perfilprivado") {
       return (
         <ScrollView>
-          <Container>
+          <View style={{flex:1,justifyContent:"space-between",alignItems:"center", padding:20, marginTop:20}}>
             <View style={styles.cabecera}>
               <View>
                 <Image
@@ -645,9 +665,9 @@ export default class PrivateProfile extends Component {
               </View>
               <View style={styles.cabeceraDerecha}>
                 <View style={styles.cabeceraStadisticas}>
-                  <Text styles={styles.item}>9</Text>
-                  <Text styles={styles.item}>4</Text>
-                  <Text styles={styles.item}>12</Text>
+                  <Text styles={styles.item}>{busca(this.state.sells)}</Text>
+                  <Text styles={styles.item}>{busca(this.state.buys)}</Text>
+                  <Text styles={styles.item}>{busca(this.state.sells)}</Text>
                 </View>
                 <View style={styles.cabeceraStadisticas}>
                   <Text styles={styles.item}>Sells</Text>
@@ -668,32 +688,32 @@ export default class PrivateProfile extends Component {
               </View>
             </View>
             <View>
-              <Text style={styles.usuario}> {this.state.username}</Text>
-              <Text style={styles.descripcion}>{this.state.description}:</Text>
+              <Text style={styles.usuario}>{this.state.username}</Text>
+              <Text style={styles.descripcion}>{this.state.description ? this.state.description : "Add a description!!" }</Text>
             </View>
             <View style={styles.contacto}>
-              <Text>{this.state.phone}:</Text>
-              <Text>{this.state.email}:</Text>
-              <Text>Chat</Text>
+              <Text>{this.state.phone}</Text>
+              <Text>{this.state.email}</Text>
             </View>
-            <Categorias openProduct={x => this.openProduct(x)} />
-            <View style={{ flex: 1 }}>
-              <Touchable
-                onPress={() =>
-                  this.setState({ ...this.state, vista: "crearproducto" })
-                }
-              >
-                <View style={styles.buttonContainer3}>
-                  <Text style={styles.buttonText2}>Ir a crear producto</Text>
-                </View>
-              </Touchable>
-              <Touchable onPress={this.props.press}>
-                <View style={styles.buttonContainer4}>
-                  <Text style={styles.newButtonText}>logout</Text>
-                </View>
-              </Touchable>
-            </View>
-          </Container>
+            <Categorias  openProduct={x => this.openProduct(x)} />
+                    <View style={{flex:1}}>
+
+            <Touchable
+              onPress={() =>
+                this.setState({ ...this.state, vista: "crearproducto" })
+              }
+            >
+              <View style={styles.buttonContainer3}>
+                <Text style={styles.buttonText2}>Ir a crear producto</Text>
+              </View>
+            </Touchable>
+            <Touchable onPress={this.props.press}>
+              <View style={styles.buttonContainer4}>
+                <Text style={styles.newButtonText}>logout</Text>
+              </View>
+            </Touchable>
+                    </View>
+          </View>
         </ScrollView>
       );
     } else if (this.state.vista === "editarPerfil") {
@@ -988,41 +1008,62 @@ export default class PrivateProfile extends Component {
       );
     } else if (this.state.vista === "product") {
       return (
-        <View style={styles.container}>
-          <ScrollView>
-            <View style={styles.containerProduct}>
-              <View style={styles.productHeader}>
-                <View>
-                  <Image
-                    style={styles.imagenItem1}
-                    source={require("../assets/images/icon.png")}
-                  />
-                </View>
-                <View style={styles.tituloDerecha}>
-                  <View style={styles.barradetitulo}>
-                    <Text style={styles.tituloBlanco}>{this.state.title}</Text>
+        <ScrollView>
+    <View style={{flex: 1,
+                  backgroundColor: "#fff",
+                  padding: 10,
+                  marginTop: 30,}}>
+
+                  <View style={{backgroundColor:"#34b5ba",marginBottom:15,borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#34b5ba",}}>
+
+                  <View style={{flex:1,flexDirection:"row",padding:10}}>
+
+                        <View>
+
+                              <Image
+                                style={styles.imagenItem1}
+                                source={{ uri: this.state.imgProduct }}
+                                />
+                          
+                        </View>
+
+                        <View>
+                                    
+                            <View style={{ flex:1, justifyContent:"space-around"}}>
+
+                                  <Text style={styles.tituloBlanco}>{this.state.title}</Text>
+                                  <Text style={styles.subtituloBlanco}>
+                                    {this.state.price}
+                                  </Text>
+                                  <Text style={styles.subtituloBlanco}>
+                                    {this.state.date}
+                                  </Text>
+                          
+                            </View>
+                        </View>
+
+                    
                   </View>
-                  <View>
-                    <Text style={styles.subtituloBlanco}>
-                      {this.state.price}
-                    </Text>
-                    <Text style={styles.subtituloBlanco}>
-                      {this.state.date}
-                    </Text>
+
+
+                    <View style={{backgroundColor:"white",borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#34b5ba",}}>
+                            <View  style={{height:100 , padding: 10}}>
+                            <View style={{ flex:1, justifyContent:"space-between"}}>
+
+            <Text numberOfLines={3}>{this.state.description}</Text>
+            <Text  style={{fontSize:10,color:"grey"}}>{this.state.createAt}</Text>
+                            </View>
+
+                            </View>
+
+
+                    </View>
                   </View>
-                  <View>
-                    <TouchableOpacity style={styles.botonCabron}>
-                      <Text style={styles.buttonX}>BUY</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.fondoblanco}>
-                <Text>{this.state.createAt}</Text>
-                <Text numberOfLines={3}>{this.state.description}</Text>
-              </View>
-            </View>
-            <View style={styles.mapaBorde}>
+                  
               <MapView
                 style={styles.productoMapa}
                 initialRegion={{
@@ -1031,51 +1072,65 @@ export default class PrivateProfile extends Component {
                   latitudeDelta: 0.005,
                   longitudeDelta: 0.005
                 }}
-              />
-            </View>
-            <View style={styles.productoAuthor}>
-              <TouchableOpacity onPress={() => this.props.openProduct(x)}>
-                <View style={styles.titleItem}>
-                  <View style={styles.item}>
+                />
+
+
+              <View  style={{flex:1,flexDirection:"row",padding:10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#34b5ba",
+    marginTop:15}}>
+
+                      <View>
+
                     <Image
                       source={require("../assets/images/icon.png")}
                       style={styles.imagenItem}
-                    />
-                  </View>
-                  <View style={styles.item}>
-                    <View style={styles.itemHeader}>
+                      />
+                      </View>
+
+
+                  <View>
+                    <View style={{flex:1,justifyContent:"space-around"}}>
+
                       <Text style={styles.itemTitle}>{this.state.author}</Text>
-                    </View>
+                      <TouchableOpacity
+                    onPress={()=>{
+                      this.call(this.state.phone)
+                    }}
+                    >
                     <Text style={styles.itemDescription}>
                       {this.state.phone}
                     </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                    onPress={() => 
+                      WebBrowser.openBrowserAsync(`https://mail.google.com/mail/?view=cm&fs=1&to=${this.state.email}&su=ButtlerApp`)}>
+
                     <Text style={styles.itemDescription}>
                       {this.state.email}
                     </Text>
-                    {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
-                    <Text>borrar</Text>
-                  </TouchableOpacity> */}
+
+                    </TouchableOpacity>
+                    </View>
+
                   </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity style={styles.newButtonContainer}>
-                <Text style={styles.newButtonText}>CHAT</Text>
-              </TouchableOpacity>
-            </View>
-            <View>
+
+              </View>
+
+
               <TouchableOpacity
                 style={styles.newButtonContainer2}
                 onPress={() =>
                   this.setState({ ...this.state, vista: "perfilprivado" })
                 }
-              >
+                >
                 <Text style={styles.newButtonText2}>BACK</Text>
               </TouchableOpacity>
-            </View>
-          </ScrollView>
         </View>
+
+      </ScrollView>
       );
     } else {
       return (
