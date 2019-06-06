@@ -185,9 +185,7 @@ export default class Signup extends Component {
                       </View>
                     </View>
                     <Text style={styles.itemDescription} numberOfLines={3}>
-                      {item.description.length > 100
-                        ? item.description.substring(0, 100 - 3) + "..."
-                        : item.description}
+                      {item.description}
                     </Text>
                     {/* <TouchableOpacity onPress={() => this.borrar(item._id)}>
                     <Text>borrar</Text>

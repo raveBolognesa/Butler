@@ -194,9 +194,7 @@ export default class HomeScreen extends React.Component {
             </View>
             <View style={styles.fondoblanco}>
               <Text numberOfLines={3} style={{height: 70}}>
-                {this.state.description.length > 170
-                  ? this.state.description.substring(0, 170 - 3) + "..."
-                  : this.state.description}
+                {this.state.description}
               </Text>
                   <Text style={{fontSize:10,color:"grey"}}>{this.state.createAt}</Text>
             </View>
